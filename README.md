@@ -15,6 +15,7 @@ npm install
 
 gulp watch
 ```
+Dev server will listen to [http://localhost:3000](http://localhost:3000) and **Hot Reloading** will be active on save
 
 
 ## Build project ##
