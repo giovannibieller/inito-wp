@@ -1,0 +1,38 @@
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
+
+.clearfix {
+    display: inline-block;
+}
+
+.txt_center {
+    text-align: center
+}
+
+.txt_right {
+    text-align: right
+}
+
+.txt_justify {
+    text-align: justify
+}
+
+img {
+    max-width: 100%;
+}
+
+*:focus {
+    outline: none;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
