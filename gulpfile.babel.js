@@ -13,8 +13,14 @@ import imagemin from 'gulp-imagemin';
 import pngquant from 'imagemin-pngquant';
 import babel from 'gulp-babel';
 import print from 'gulp-print';
+import ignore from 'gulp-ignore';
+import prompt from 'gulp-prompt';
+import fs from 'node-fs';
 
 const paths = {
+    root: './',
+    assets: './assets',
+    node_modules: './node_modules',
     sass: './assets/sass',
     js: './assets/js',
     img: './assets/img',
@@ -119,4 +125,35 @@ gulp.task('dist', ['clean-dist-css'], cb => {
 /**
  * Create Theme
  */
-gulp.task('create-theme', ['dist'], () => {});
+gulp.task('create-theme', () => {
+    gulp.src([paths.root]).pipe(
+        prompt.prompt(
+            [
+                {
+                    type: 'input',
+                    name: 'name',
+                    message: 'Theme Name'
+                }
+            ],
+            res => {
+                let destPath = paths.root + res.name;
+
+                let copyFiles = () => {
+                    gulp
+                        .src([
+                            paths.root + '**/**/*.*',
+                            paths.root + '.babelrc',
+                            paths.root + '.gitignore',
+                            '!' + paths.node_modules + '/**',
+                            '!' + paths.dist + '/**'
+                        ])
+                        .pipe(ignore.exclude(paths.node_modules))
+                        .pipe(ignore.exclude(paths.assets))
+                        .pipe(gulp.dest(destPath));
+                };
+
+                del([destPath]).then(copyFiles);
+            }
+        )
+    );
+});
