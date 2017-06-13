@@ -13,10 +13,10 @@ import imagemin from 'gulp-imagemin';
 import pngquant from 'imagemin-pngquant';
 import babel from 'gulp-babel';
 import print from 'gulp-print';
-import ignore from 'gulp-ignore';
 import prompt from 'gulp-prompt';
 import fs from 'node-fs';
 import jsonmod from 'gulp-json-modify';
+import replace from 'gulp-replace';
 
 const paths = {
     root: './',
@@ -195,6 +195,15 @@ gulp.task('create-theme', () => {
                         .pipe(gulp.dest(destPath));
                 };
 
+                let changeThemeName = () => {
+                    gulp
+                        .src([paths.root + 'style.css'])
+                        .pipe(replace('WP Boilerplate Theme', res.name))
+                        .pipe(replace('Version: 1.0', 'Version: ' + res.version))
+                        .pipe(replace('Description: ', 'Description: ' + res.description))
+                        .pipe(gulp.dest(destPath));
+                };
+
                 let copyFiles = () => {
                     gulp
                         .src([
@@ -203,14 +212,13 @@ gulp.task('create-theme', () => {
                             paths.root + '.gitignore',
                             '!' + paths.node_modules + '/**',
                             '!' + paths.dist + '/**',
-                            '!' + paths.root + 'package.json'
+                            '!' + paths.root + 'package.json',
+                            '!' + paths.root + 'style.css'
                         ])
-                        .pipe(ignore.exclude(paths.node_modules))
-                        .pipe(ignore.exclude(paths.assets))
                         .pipe(gulp.dest(destPath));
                 };
 
-                del([destPath]).then(copyFiles).then(changeName);
+                del([destPath]).then(copyFiles).then(changeName).then(changeThemeName);
             }
         )
     );
