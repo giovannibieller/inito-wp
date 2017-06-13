@@ -16,6 +16,7 @@ import print from 'gulp-print';
 import ignore from 'gulp-ignore';
 import prompt from 'gulp-prompt';
 import fs from 'node-fs';
+import jsonmod from 'gulp-json-modify';
 
 const paths = {
     root: './',
@@ -25,6 +26,7 @@ const paths = {
     js: './assets/js',
     img: './assets/img',
     ico: './assets/ico',
+    create: './create',
     dist: './dist'
 };
 
@@ -132,11 +134,66 @@ gulp.task('create-theme', () => {
                 {
                     type: 'input',
                     name: 'name',
-                    message: 'Theme Name'
+                    message: 'name'
+                },
+                {
+                    type: 'input',
+                    name: 'version',
+                    message: 'version',
+                    default: '1.0.0'
+                },
+                {
+                    type: 'input',
+                    name: 'description',
+                    message: 'description',
+                    default: ''
+                },
+                {
+                    type: 'input',
+                    name: 'author',
+                    message: 'author',
+                    default: 'giovanni.bieller@gmail.com'
                 }
             ],
             res => {
-                let destPath = paths.root + res.name;
+                let formName = res.name.replace(/\s/g, '-').toLowerCase();
+                let destPath = paths.create + '/' + formName;
+
+                let changeName = () => {
+                    gulp
+                        .src([paths.root + 'package.json'])
+                        .pipe(
+                            jsonmod({
+                                key: 'name',
+                                value: formName
+                            })
+                        )
+                        .pipe(
+                            jsonmod({
+                                key: 'themeName',
+                                value: res.name
+                            })
+                        )
+                        .pipe(
+                            jsonmod({
+                                key: 'description',
+                                value: res.description
+                            })
+                        )
+                        .pipe(
+                            jsonmod({
+                                key: 'version',
+                                value: res.version
+                            })
+                        )
+                        .pipe(
+                            jsonmod({
+                                key: 'author',
+                                value: res.author
+                            })
+                        )
+                        .pipe(gulp.dest(destPath));
+                };
 
                 let copyFiles = () => {
                     gulp
@@ -145,14 +202,15 @@ gulp.task('create-theme', () => {
                             paths.root + '.babelrc',
                             paths.root + '.gitignore',
                             '!' + paths.node_modules + '/**',
-                            '!' + paths.dist + '/**'
+                            '!' + paths.dist + '/**',
+                            '!' + paths.root + 'package.json'
                         ])
                         .pipe(ignore.exclude(paths.node_modules))
                         .pipe(ignore.exclude(paths.assets))
                         .pipe(gulp.dest(destPath));
                 };
 
-                del([destPath]).then(copyFiles);
+                del([destPath]).then(copyFiles).then(changeName);
             }
         )
     );
