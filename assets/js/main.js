@@ -1,6 +1,8 @@
-let toConsole = message => {
-    console.log(message);
-};
+document.addEventListener('DOMContentLoaded', () => {
+    let toConsole = message => {
+        console.log(message);
+    };
 
-const mess = 'main js loaded';
-toConsole(mess);
+    const mess = 'main js loaded';
+    toConsole(mess);
+});

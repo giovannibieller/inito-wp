@@ -5,6 +5,9 @@
     //add menu support
 	add_theme_support( 'menus' );
 
+    // add thumbnails support
+    add_theme_support( 'post-thumbnails' ); 
+
     // register main menu
     function register_menus() {
 		register_nav_menus(
