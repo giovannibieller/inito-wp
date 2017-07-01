@@ -17,6 +17,14 @@ gulp watch
 ```
 Watch mode will control changes on ```scss``` and ```js``` files
 
+## Favicons generator using RealFaviconGenerator ##
+```
+#!javascript
+
+gulp favicons
+```
+Task bound in ```dist``` task too.<br/>
+Generate favicons starting from image in ```/assets/img/favicon/base.png``` size ```300x300 px```
 
 ## Build project ##
 

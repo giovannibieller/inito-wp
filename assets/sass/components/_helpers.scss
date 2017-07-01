@@ -12,19 +12,20 @@
 }
 
 .txt_center {
-    text-align: center
+    text-align: center;
 }
 
 .txt_right {
-    text-align: right
+    text-align: right;
 }
 
 .txt_justify {
-    text-align: justify
+    text-align: justify;
 }
 
 img {
     max-width: 100%;
+    display: block;
 }
 
 *:focus {

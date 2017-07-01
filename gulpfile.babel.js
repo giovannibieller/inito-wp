@@ -17,6 +17,8 @@ import prompt from 'gulp-prompt';
 import fs from 'node-fs';
 import jsonmod from 'gulp-json-modify';
 import replace from 'gulp-replace';
+import realFavicon from 'gulp-real-favicon';
+import prettify from 'gulp-prettify';
 
 const paths = {
     root: './',
@@ -27,7 +29,8 @@ const paths = {
     img: './assets/img',
     ico: './assets/ico',
     create: './create',
-    dist: './dist'
+    dist: './dist',
+    includes: './includes'
 };
 
 /**
@@ -100,8 +103,198 @@ gulp.task('copy-fonts', () => {
 });
 
 /**
+ * Favicon generator
+ */
+let FAVICON_DATA_FILE = paths.ico + '/faviconData.json',
+    FAVICON_HTML_FILE = paths.includes + '/head.php';
+
+gulp.task('generate-favicon', done => {
+    gulp.src([paths.root]).pipe(
+        prompt.prompt(
+            [
+                {
+                    type: 'input',
+                    name: 'name',
+                    message: 'Theme name in manifest.json',
+                    default: ''
+                },
+                {
+                    type: 'checkbox',
+                    name: 'display',
+                    message: 'App display mode',
+                    default: 'standalone',
+                    choices: ['fullscreen', 'standalone', 'minimal-ui', 'browser']
+                },
+                {
+                    type: 'checkbox',
+                    name: 'orientation',
+                    message: 'App orientation mode',
+                    default: 'notSet',
+                    choices: [
+                        'notSet',
+                        'any',
+                        'natural',
+                        'landscape',
+                        'landscape-primary',
+                        'landscape-secondary',
+                        'portrait',
+                        'portrait-primary',
+                        'portrait-secondary'
+                    ]
+                },
+                {
+                    type: 'input',
+                    name: 'backgroundColor',
+                    message: 'Favicon background color',
+                    default: '#ffffff'
+                },
+                {
+                    type: 'checkbox',
+                    name: 'margin',
+                    message: 'Favicon margin/padding',
+                    default: 'y',
+                    choices: ['y', 'n']
+                },
+                {
+                    type: 'input',
+                    name: 'themeColor',
+                    message: 'PWA themeColor',
+                    default: '#ffffff'
+                },
+                {
+                    type: 'input',
+                    name: 'safariThemeColor',
+                    message: 'Favicon Safari theme color',
+                    default: '#ffffff'
+                }
+            ],
+            res => {
+                realFavicon.generateFavicon(
+                    {
+                        masterPicture: paths.img + '/favicon/base.png',
+                        dest: paths.ico,
+                        iconsPath: paths.dist + '/ico',
+                        design: {
+                            ios: {
+                                pictureAspect: 'backgroundAndMargin',
+                                backgroundColor: res.backgroundColor,
+                                margin: res.margin.toString() === 'y' ? '14%' : '0',
+                                assets: {
+                                    ios6AndPriorIcons: false,
+                                    ios7AndLaterIcons: false,
+                                    precomposedIcons: false,
+                                    declareOnlyDefaultIcon: true
+                                }
+                            },
+                            desktopBrowser: {},
+                            windows: {
+                                pictureAspect: 'noChange',
+                                backgroundColor: res.backgroundColor,
+                                onConflict: 'override',
+                                assets: {
+                                    windows80Ie10Tile: false,
+                                    windows10Ie11EdgeTiles: {
+                                        small: false,
+                                        medium: true,
+                                        big: false,
+                                        rectangle: false
+                                    }
+                                }
+                            },
+                            androidChrome: {
+                                pictureAspect: 'backgroundAndMargin',
+                                margin: '17%',
+                                backgroundColor: res.backgroundColor,
+                                themeColor: res.themeColor,
+                                manifest: {
+                                    name: res.name,
+                                    display: res.display.toString(),
+                                    orientation: res.orientation.toString(),
+                                    onConflict: 'override',
+                                    declared: true
+                                },
+                                assets: {
+                                    legacyIcon: false,
+                                    lowResolutionIcons: false
+                                }
+                            },
+                            safariPinnedTab: {
+                                pictureAspect: 'blackAndWhite',
+                                threshold: 50,
+                                themeColor: res.safariThemeColor
+                            }
+                        },
+                        settings: {
+                            scalingAlgorithm: 'Mitchell',
+                            errorOnImageTooSmall: false
+                        },
+                        markupFile: FAVICON_DATA_FILE
+                    },
+                    () => {
+                        done();
+                    }
+                );
+            }
+        )
+    );
+});
+
+gulp.task('copy-ico-files', () => {
+    return gulp
+        .src([paths.ico + '/manifest.json', paths.ico + '/browserconfig.xml'])
+        .pipe(gulp.dest(paths.root));
+});
+
+gulp.task('inject-favicon-markups', function() {
+    let htmlcode = JSON.parse(fs.readFileSync(FAVICON_DATA_FILE)).favicon.html_code.replace(
+        /\.\//g,
+        '<?php echo $tmpDir;?>/'
+    );
+
+    return gulp
+        .src([FAVICON_HTML_FILE])
+        .pipe(replace('<!-- generated favicons -->', ''))
+        .pipe(realFavicon.injectFaviconMarkups('<!-- generated favicons -->\n' + htmlcode + '\n'))
+        .pipe(
+            replace(
+                '<?php echo $tmpDir;?>/dist/ico/browserconfig.xml',
+                '<?php echo $tmpDir;?>/browserconfig.xml'
+            )
+        )
+        .pipe(
+            replace(
+                '<?php echo $tmpDir;?>/dist/ico/browserconfig.xml',
+                '<?php echo $tmpDir;?>/browserconfig.xml'
+            )
+        )
+        .pipe(
+            replace(
+                '<?php echo $tmpDir;?>/dist/ico/manifest.json',
+                '<?php echo $tmpDir;?>/manifest.json'
+            )
+        )
+        .pipe(replace('</body>', ''))
+        .pipe(replace('</html>', ''))
+        .pipe(prettify({ indent_size: 4 }))
+        .pipe(gulp.dest(paths.includes));
+});
+
+gulp.task('check-for-favicon-update', function(done) {
+    var currentVersion = JSON.parse(fs.readFileSync(FAVICON_DATA_FILE)).version;
+    realFavicon.checkForUpdates(currentVersion, function(err) {
+        if (err) {
+            throw err;
+        }
+    });
+});
+
+/**
  * Del folder
  */
+gulp.task(
+    'clean-ico-files',
+    del.bind(null, [paths.ico + '/manifest.json', paths.ico + '/browserconfig.xml'])
+);
 gulp.task('clean-dist-css', del.bind(null, [paths.dist + '/css']));
 
 /**
@@ -118,9 +311,22 @@ gulp.task('watch', ['copy-images', 'copy-ico'], () => {
 });
 
 /**
+ * Favicon
+ */
+gulp.task('favicons', cb => {
+    runSequence(
+        'generate-favicon',
+        'copy-ico-files',
+        'clean-ico-files',
+        'inject-favicon-markups',
+        cb
+    );
+});
+
+/**
  * Dist
  */
-gulp.task('dist', ['clean-dist-css'], cb => {
+gulp.task('dist', ['clean-dist-css', 'favicons'], cb => {
     runSequence('copy-images', 'copy-js', 'copy-ico', 'sass', 'js', cb);
 });
 
@@ -134,24 +340,24 @@ gulp.task('create-theme', () => {
                 {
                     type: 'input',
                     name: 'name',
-                    message: 'name'
+                    message: 'Theme name'
                 },
                 {
                     type: 'input',
                     name: 'version',
-                    message: 'version',
+                    message: 'Theme version',
                     default: '1.0.0'
                 },
                 {
                     type: 'input',
                     name: 'description',
-                    message: 'description',
+                    message: 'Theme description',
                     default: ''
                 },
                 {
                     type: 'input',
                     name: 'author',
-                    message: 'author',
+                    message: 'Theme author',
                     default: 'giovanni.bieller@gmail.com'
                 }
             ],

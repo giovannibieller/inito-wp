@@ -3,3 +3,21 @@ body {
     margin: 0;
     padding: 0;
 }
+
+// img editor alignment
+img.alignleft {
+    float: left;
+    margin-right: 15px;
+    margin-bottom: 10px;
+}
+
+img.alignright {
+    float: right;
+    margin-left: 15px;
+    margin-bottom: 10px;
+}
+
+img.aligncenter {
+    display: block;
+    margin: 0 auto;
+}
