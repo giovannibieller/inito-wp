@@ -57,7 +57,7 @@ gulp.task('js', () => {
     return gulp
         .src([paths.js + '/main.js'])
         .pipe(print())
-        .pipe(babel({ presets: ['es2015'] }))
+        .pipe(babel({ presets: ['env'] }))
         .pipe(concat('main.js'))
         .pipe(uglify())
         .pipe(
@@ -70,11 +70,9 @@ gulp.task('js', () => {
 
 gulp.task('copy-js', () => {
     return gulp
-        .src(
-            [
-                /*array of vendor scripts*/
-            ]
-        )
+        .src([
+            /*array of vendor scripts*/
+        ])
         .pipe(gulp.dest(paths.dist + '/js/vendor'));
 });
 
@@ -424,7 +422,10 @@ gulp.task('create-theme', () => {
                         .pipe(gulp.dest(destPath));
                 };
 
-                del([destPath]).then(copyFiles).then(changeName).then(changeThemeName);
+                del([destPath])
+                    .then(copyFiles)
+                    .then(changeName)
+                    .then(changeThemeName);
             }
         )
     );
