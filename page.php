@@ -4,9 +4,13 @@
 ?>
 
 <div class="main_container">
-    <?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
+    <?php 
+        if ( have_posts() ) : while ( have_posts() ) : the_post(); 
+            $postID = $post->ID;
+    ?>
         <div class="main_container__int">
-            <!-- contents page -->
+            <?php the_content(); ?>
+            <?php include (TEMPLATEPATH . "/page-templates/partials/flexible.php"); ?>
         </div>
     <?php endwhile; endif; ?>
 </div>

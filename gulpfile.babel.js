@@ -128,17 +128,7 @@ gulp.task('generate-favicon', done => {
                     name: 'orientation',
                     message: 'App orientation mode',
                     default: 'notSet',
-                    choices: [
-                        'notSet',
-                        'any',
-                        'natural',
-                        'landscape',
-                        'landscape-primary',
-                        'landscape-secondary',
-                        'portrait',
-                        'portrait-primary',
-                        'portrait-secondary'
-                    ]
+                    choices: ['notSet', 'landscape', 'portrait']
                 },
                 {
                     type: 'input',
@@ -364,8 +354,7 @@ gulp.task('create-theme', () => {
                 let destPath = paths.create + '/' + formName;
 
                 let changeName = () => {
-                    gulp
-                        .src([paths.root + 'package.json'])
+                    gulp.src([paths.root + 'package.json'])
                         .pipe(
                             jsonmod({
                                 key: 'name',
@@ -400,26 +389,23 @@ gulp.task('create-theme', () => {
                 };
 
                 let changeThemeName = () => {
-                    gulp
-                        .src([paths.root + 'style.css'])
-                        .pipe(replace('WP Boilerplate Theme', res.name))
+                    gulp.src([paths.root + 'style.css'])
+                        .pipe(replace('WP Start Theme', res.name))
                         .pipe(replace('Version: 1.0', 'Version: ' + res.version))
                         .pipe(replace('Description: ', 'Description: ' + res.description))
                         .pipe(gulp.dest(destPath));
                 };
 
                 let copyFiles = () => {
-                    gulp
-                        .src([
-                            paths.root + '**/**/*.*',
-                            paths.root + '.babelrc',
-                            paths.root + '.gitignore',
-                            '!' + paths.node_modules + '/**',
-                            '!' + paths.dist + '/**',
-                            '!' + paths.root + 'package.json',
-                            '!' + paths.root + 'style.css'
-                        ])
-                        .pipe(gulp.dest(destPath));
+                    gulp.src([
+                        paths.root + '**/**/*.*',
+                        paths.root + '.babelrc',
+                        paths.root + '.gitignore',
+                        '!' + paths.node_modules + '/**',
+                        '!' + paths.dist + '/**',
+                        '!' + paths.root + 'package.json',
+                        '!' + paths.root + 'style.css'
+                    ]).pipe(gulp.dest(destPath));
                 };
 
                 del([destPath])
