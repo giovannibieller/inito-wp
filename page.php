@@ -8,7 +8,7 @@
         if ( have_posts() ) : while ( have_posts() ) : the_post(); 
             $postID = $post->ID;
     ?>
-        <div class="main_container__int">
+        <div class="main_container_int">
             <?php the_content(); ?>
             <?php include (TEMPLATEPATH . "/page-templates/partials/flexible.php"); ?>
         </div>

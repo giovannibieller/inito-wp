@@ -5,8 +5,9 @@
 
 <div class="main_container">
     <?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
-        <div class="main_container__int">
-            <!-- contents single -->
+        <div class="main_container_int">
+            <?php the_content(); ?>
+            <?php include (TEMPLATEPATH . "/page-templates/partials/flexible.php"); ?>
         </div>
     <?php endwhile; endif; ?>
 </div>

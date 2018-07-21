@@ -1,8 +1,10 @@
 @import '../../node_modules/gridocss/src/assets/scss/grido';
 @import '../../node_modules/reset-css/_reset.scss';
+@import './components/variables';
 @import './components/colors';
 @import './components/helpers';
 @import './components/mixins';
 @import './components/typo';
 @import './components/animations';
 @import './components/common';
+@import './components/flex';

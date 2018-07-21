@@ -24,29 +24,6 @@
 	}
 	add_action( 'init', 'register_menus' );
 
-    // page title
-    function page_title()
-    {
-        if (is_home()) {
-            bloginfo('name');
-            // Add the blog description for the home/front page.
-            $site_description = get_bloginfo('description');
-            if ($site_description && (is_home() || is_front_page())) {
-                echo " | $site_description";
-            }
-        } elseif (is_category()) {
-            single_cat_title();
-            echo ' - ';
-            bloginfo('name');
-        } elseif (is_single()) {
-            single_post_title();
-        } elseif (is_page()) {
-            single_post_title();
-            echo ' | ';
-            bloginfo('name');
-        } else {wp_title('', true);}
-    }
-
     // body page classes
     function body_classes()
     {
@@ -71,7 +48,8 @@
 
         echo $catClass;
     }
-    
+
+    // add current item class
     function add_current_nav_class($classes, $item) {
     
         // Getting the current post details
@@ -93,5 +71,36 @@
         return $classes;
     
     }
+
+    // post types for search
+    function include_custom_post_types( $query ) {
+        $custom_post_type = get_query_var( 'post_type' );
+    
+        if ( is_archive() ) {
+            if ( empty( $custom_post_type ) ) $query->set( 'post_type' , get_post_types() );
+        }
+    
+        if ( is_search() ) {
+            if ( empty( $custom_post_type ) ) {
+                $query->set( 'post_type' , array('post'));
+            }
+        }
+    
+        return $query;
+    }
+    add_filter( 'pre_get_posts' , 'include_custom_post_types' );
+
+    // add SVG
+    function cc_mime_types($mimes) {
+        $mimes['svg'] = 'image/svg+xml';
+        return $mimes;
+    }
+    add_filter('upload_mimes', 'cc_mime_types');
+
+    // Move Yoast SEO to bottom
+    function yoasttobottom() {
+        return 'low';
+    }
+    add_filter( 'wpseo_metabox_prio', 'yoasttobottom');
     
 ?>

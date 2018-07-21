@@ -2,7 +2,7 @@
     visibility: hidden;
     display: block;
     font-size: 0;
-    content: " ";
+    content: ' ';
     clear: both;
     height: 0;
 }
@@ -36,4 +36,12 @@ img {
 *:before,
 *:after {
     box-sizing: border-box;
+}
+
+.pull_right {
+    float: right;
+}
+
+.pull_left {
+    float: left;
 }

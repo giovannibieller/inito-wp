@@ -11,7 +11,7 @@
 
 <div class="main_container">
     <?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
-        <div class="main_container__int">
+        <div class="main_container_int">
             <!-- contents page -->
         </div>
     <?php endwhile; endif; ?>

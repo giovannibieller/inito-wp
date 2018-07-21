@@ -293,7 +293,7 @@ gulp.task('default', ['dist']);
 /**
  * Watch
  */
-gulp.task('watch', ['copy-images', 'copy-ico'], () => {
+gulp.task('watch', ['copy-images', 'copy-ico', 'copy-js'], () => {
     gulp.watch([paths.sass + '/**/*.scss'], ['sass']);
     gulp.watch([paths.js + '/*.js'], ['js']);
 });
