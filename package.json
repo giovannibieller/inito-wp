@@ -1,13 +1,14 @@
 {
-	"name": "wp-start-theme",
+	"name": "inito-wp-theme",
 	"version": "1.0.0",
-	"description": "Wordpress starter theme",
+	"description": "Wordpress Starter Theme",
 	"main": "index.php",
-	"repository": "https://giovannibieller@bitbucket.org/giovannibieller/wp-start.git",
+	"repository": "https://github.com/giovannibieller/inito-wp",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "gulp watch",
-		"build": "gulp dist"
+		"start": "wp-env start && gulp watch",
+		"stop": "wp-env stop",
+		"build": "gulp build"
 	},
 	"author": "",
 	"license": "ISC",
@@ -15,30 +16,20 @@
 		"del": "^6.1.0",
 		"gridocss": "^1.1.6",
 		"gulp": "^4.0.2",
-		"gulp-autoprefixer": "^8.0.0",
 		"gulp-babel": "^8.0.0",
 		"gulp-concat": "^2.6.1",
-		"gulp-imagemin": "^8.0.0",
-		"gulp-json-modify": "^1.0.2",
 		"gulp-notify": "^4.0.0",
-		"gulp-prettify": "^0.5.0",
-		"gulp-print": "^5.0.2",
-		"gulp-prompt": "^1.2.0",
-		"gulp-real-favicon": "^0.3.2",
-		"gulp-rename": "^2.0.0",
-		"gulp-replace": "^1.1.3",
 		"gulp-sass": "^5.1.0",
 		"gulp-uglify": "^3.0.2",
-		"imagemin-pngquant": "^9.0.2",
-		"node-fs": "^0.1.7",
 		"reset-css": "^5.0.1",
-		"run-sequence": "^2.2.1",
+		"sass": "^1.56.1",
 		"webpack-stream": "^7.0.0"
 	},
-	"themeName": "WP Start Theme",
+	"themeName": "INITO WP Starter Theme",
 	"devDependencies": {
 		"@babel/core": "^7.18.0",
 		"@babel/preset-env": "^7.18.0",
-		"@babel/register": "^7.17.7"
+		"@babel/register": "^7.17.7",
+		"webpack": "^5.75.0"
 	}
 }

@@ -1,7 +1,4 @@
 <?php
-    // default language it_IT.php
-    include (TEMPLATEPATH . "/lang/it_IT.php");
-
     // page current url
 	$pageURL = 'http';
     

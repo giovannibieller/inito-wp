@@ -1,4 +1,4 @@
-# wp start theme
+# INITO WP - STARTER THEME
 
 ## Install dependencies
 
@@ -8,7 +8,15 @@
 npm install
 ```
 
-## Run Dev Server
+## Run DEV SERVER with WP-ENV
+
+```
+#!javascript
+
+npm start
+```
+
+## Run Assets Watch Compiler without WP-ENV
 
 ```
 #!javascript
@@ -18,23 +26,16 @@ gulp watch
 
 Watch mode will control changes on `scss` and `js` files
 
-## Favicons generator using RealFaviconGenerator
+## ACF Basic Flexible Fields import
 
-```
-#!javascript
-
-gulp favicons
-```
-
-Task bound in `dist` task too.  
-Generate favicons starting from image in `/assets/img/favicon/base.png` size `300x300 px`
+You can find the JSON to import in `/imports` folder
 
 ## Build project
 
 ```
 #!javascript
 
-gulp dist
+npm run build
 ```
 
 After the build command a new /dist folder will be created with: css, img, ico, js directories inside.

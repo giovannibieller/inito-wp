@@ -102,5 +102,21 @@
         return 'low';
     }
     add_filter( 'wpseo_metabox_prio', 'yoasttobottom');
+
+    // Load Translations
+    function wp_inito_load_theme_textdomain() {
+        load_theme_textdomain( 'inito-wp-theme', get_template_directory() . '/lang' );
+    }
+    add_action( 'after_setup_theme', 'wp_inito_load_theme_textdomain' );
+
+    // function default_site_locale( $locale ) {
+    //     $default_locale = 'en_US';
+    //     return $default_locale;
+    // }
+    // add_filter( 'locale', 'default_site_locale' );
+
+    function tr($text){
+        return _e($text, 'inito-wp-theme');
+    }
     
 ?>
