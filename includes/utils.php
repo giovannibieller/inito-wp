@@ -1,4 +1,11 @@
 <?php
+    // theme version
+    $version = '1.0.0';
+    
+    // current language
+    $curlang = 'en';
+    $curlocale = 'en_US';
+
     // page current url
 	$pageURL = 'http';
     

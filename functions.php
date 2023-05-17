@@ -118,5 +118,43 @@
     function tr($text){
         return _e($text, 'inito-wp-theme');
     }
+
+    if( function_exists('acf_add_options_page') ) {
+        acf_add_options_page(array(
+            'page_title'    => 'SEO Settings',
+            'menu_title'    => 'SEO Settings',
+            'menu_slug'     => 'seo-settings',
+        ));
+
+        acf_add_options_page(array(
+            'page_title'    => 'Utils',
+            'menu_title'    => 'Utils',
+            'menu_slug'     => 'utils',
+        ));
+    }
+
+    /**
+     * Return the post excerpt, if one is set, else generate it using the
+     * post content. If original text exceeds $num_of_words, the text is
+     * trimmed and an ellipsis (…) is added to the end.
+     *
+     * @param  int|string|WP_Post $post_id   Post ID or object. Default is current post.
+     * @param  int                $num_words Number of words. Default is 33.
+     * @return string                        The generated excerpt.
+     */
+    function get_post_excerpt( $post_id = null, $num_words = 33 ) {
+
+        $post = $post_id ? get_post( $post_id ) : get_post( get_the_ID() );
+        $text = get_the_excerpt( $post );
+
+        if ( ! $text ) {
+            $text = get_post_field( 'post_content', $post );
+        }
+
+        $generated_excerpt = wp_trim_words( $text, $num_words );
+
+        return apply_filters( 'get_the_excerpt', $generated_excerpt, $post );
+
+    }
     
 ?>
