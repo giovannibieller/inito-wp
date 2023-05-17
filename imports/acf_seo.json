@@ -133,23 +133,6 @@
         "title": "SEO single",
         "fields": [
             {
-                "key": "field_6464963ffe556",
-                "label": "SEO SETTINGS",
-                "name": "",
-                "aria-label": "",
-                "type": "tab",
-                "instructions": "",
-                "required": 0,
-                "conditional_logic": 0,
-                "wrapper": {
-                    "width": "",
-                    "class": "",
-                    "id": ""
-                },
-                "placement": "top",
-                "endpoint": 0
-            },
-            {
                 "key": "field_6464958ffe551",
                 "label": "SEO title",
                 "name": "seo_title",
