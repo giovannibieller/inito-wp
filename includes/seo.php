@@ -1,10 +1,10 @@
 <?php
     global $post;
 
-    $post_id = $post->ID;
-    $post_title = $post->post_title;
-    $publish_date = $post->post_date;
-    $modified_date = $post->post_modified;
+    $post_id = isset($post) ? $post->ID : NULL;
+    $post_title = isset($post) ? $post->post_title : NULL;
+    $publish_date = isset($post) ? $post->post_date : NULL;
+    $modified_date = isset($post) ? $post->post_modified : NULL;
 
     $seo_post_title = get_field('seo_title', $post_id);
     $seo_post_description = get_field('seo_description', $post_id);
@@ -23,7 +23,7 @@
     $seo_description = isset($seo_description) && $seo_description !== '' ? $seo_description : $site_description;
     $seo_url = $site_url;
 
-    if(isset($seo_post_title) && $seo_post_title !== ''){
+    if($seo_post_title && isset($seo_post_title) && $seo_post_title !== ''){
         $seo_title = $seo_post_title;
     }else{
         if(!is_front_page()){
@@ -31,7 +31,7 @@
         } 
     }
 
-    if(isset($seo_post_description) && $seo_post_description !== ''){
+    if($seo_post_description && isset($seo_post_description) && $seo_post_description !== ''){
         $seo_description = $seo_post_description;
     }else{
         if(!is_front_page()){
@@ -39,7 +39,7 @@
         }
     }
 
-    if(isset($seo_post_image) && $seo_post_image !== ''){
+    if($seo_post_image && isset($seo_post_image) && $seo_post_image !== ''){
         $seo_image = $seo_post_image;
     }
 ?>

@@ -30,6 +30,11 @@ Watch mode will control changes on `scss` and `js` files
 
 You can find the JSON to import in `/imports` folder
 
+## ACF SEO Fields import
+
+You can find the JSON to import in `/imports` folder.
+SEO imports are used for POST, PAGE, TAXONOMY
+
 ## Build project
 
 ```
