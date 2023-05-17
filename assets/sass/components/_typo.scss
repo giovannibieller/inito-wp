@@ -19,16 +19,16 @@ $font_xs: 12px;
 $font_xxs: 10px;
 
 a {
-    color: $accent;
-    text-decoration: none;
-    &:hover {
-        text-decoration: underline;
-    }
+	color: $accent;
+	text-decoration: none;
+	&:hover {
+		text-decoration: underline;
+	}
 }
 
 em,
 i {
-    font-style: italic;
+	font-style: italic;
 }
 
 h1,
@@ -37,28 +37,28 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: $font_family_accent;
-    font-weight: $font_weight_bold;
+	font-family: $font_family_accent;
+	font-weight: $font_weight_bold;
 }
 
 h1 {
-    font-size: $font_h1;
+	font-size: $font_h1;
 }
 h2 {
-    font-size: $font_h2;
+	font-size: $font_h2;
 }
 h3 {
-    font-size: $font_h3;
+	font-size: $font_h3;
 }
 h4 {
-    font-size: $font_h4;
+	font-size: $font_h4;
 }
 
 strong,
-b > {
-    font-weight: $font_weight_bold;
+b {
+	font-weight: $font_weight_bold;
 }
 
 p {
-    margin: $p_margin;
+	margin: $p_margin;
 }
