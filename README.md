@@ -1,4 +1,4 @@
-# INITO WP - STARTER THEME
+# INITO WP | Starter Theme
 
 ## Install dependencies
 

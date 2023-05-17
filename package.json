@@ -1,7 +1,7 @@
 {
 	"name": "inito-wp-theme",
 	"version": "1.0.0",
-	"description": "Wordpress Starter Theme",
+	"description": "INITO WP | Starter Theme",
 	"main": "index.php",
 	"repository": "https://github.com/giovannibieller/inito-wp",
 	"scripts": {
@@ -12,9 +12,15 @@
 	},
 	"author": "",
 	"license": "ISC",
-	"dependencies": {
+	"dependencies": {},
+	"themeName": "INITO WP | Starter Theme",
+	"devDependencies": {
+		"@babel/core": "^7.18.0",
+		"@babel/preset-env": "^7.18.0",
+		"@babel/register": "^7.17.7",
+		"sass": "^1.62.1",
+		"webpack": "^5.75.0",
 		"del": "^6.1.0",
-		"gridocss": "^1.1.6",
 		"gulp": "^4.0.2",
 		"gulp-babel": "^8.0.0",
 		"gulp-concat": "^2.6.1",
@@ -22,14 +28,6 @@
 		"gulp-sass": "^5.1.0",
 		"gulp-uglify": "^3.0.2",
 		"reset-css": "^5.0.1",
-		"sass": "^1.56.1",
 		"webpack-stream": "^7.0.0"
-	},
-	"themeName": "INITO WP Starter Theme",
-	"devDependencies": {
-		"@babel/core": "^7.18.0",
-		"@babel/preset-env": "^7.18.0",
-		"@babel/register": "^7.17.7",
-		"webpack": "^5.75.0"
 	}
 }

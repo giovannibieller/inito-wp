@@ -1,11 +1,14 @@
 import gulp, { src, series, parallel, dest } from 'gulp';
-import sass from 'gulp-sass';
+import dartSass from 'sass';
+import gulpSass from 'gulp-sass';
 import del from 'del';
 import notify from 'gulp-notify';
 import uglify from 'gulp-uglify';
 import concat from 'gulp-concat';
 import babel from 'gulp-babel';
 import webpack from 'webpack-stream';
+
+const sass = gulpSass(dartSass);
 
 const paths = {
 	root: './',
