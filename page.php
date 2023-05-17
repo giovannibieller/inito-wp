@@ -10,7 +10,6 @@
     ?>
         <div class="main_container_int">
             <?php the_content(); ?>
-            <?php include (TEMPLATEPATH . "/page-templates/partials/flexible.php"); ?>
         </div>
     <?php endwhile; endif; ?>
 </div>

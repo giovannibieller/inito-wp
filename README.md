@@ -26,10 +26,6 @@ gulp watch
 
 Watch mode will control changes on `scss` and `js` files
 
-## ACF Basic Flexible Fields import
-
-You can find the JSON to import in `/imports` folder
-
 ## ACF SEO Fields import
 
 You can find the JSON to import in `/imports` folder.
