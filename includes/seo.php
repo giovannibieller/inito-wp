@@ -14,10 +14,9 @@
     $site_description = get_bloginfo( 'description' );
     $site_url = get_bloginfo( 'url' );
 
-    $seo_title = get_field('title', 'option');
-    $seo_description = get_field('description', 'option');
-    $seo_image = get_field('image', 'option');
-    $seo_google_analytics = get_field('google_analytics', 'option');
+    $seo_title = get_field('title', 'seo-settings');
+    $seo_description = get_field('description', 'seo-settings');
+    $seo_image = get_field('image', 'seo-settings');
 
     $seo_title = isset($seo_title) && $seo_title !== '' ? $seo_title : $site_name;
     $seo_description = isset($seo_description) && $seo_description !== '' ? $seo_description : $site_description;

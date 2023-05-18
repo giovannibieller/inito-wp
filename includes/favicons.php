@@ -1,5 +1,5 @@
 <?php
-    $seo_theme_color = get_field('theme_color', 'option');
+    $seo_theme_color = get_field('theme_color', 'seo-settings');
 ?>
 
 <!-- generated favicons block -->

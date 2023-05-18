@@ -124,12 +124,14 @@
             'page_title'    => 'SEO Settings',
             'menu_title'    => 'SEO Settings',
             'menu_slug'     => 'seo-settings',
+            'post_id'     => 'seo-settings',
         ));
 
         acf_add_options_page(array(
             'page_title'    => 'Utils',
             'menu_title'    => 'Utils',
             'menu_slug'     => 'utils',
+            'post_id'     => 'utils',
         ));
     }
 
