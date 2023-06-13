@@ -1,6 +1,6 @@
 {
 	"name": "inito-wp-theme",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "INITO WP | Starter Theme",
 	"main": "index.php",
 	"repository": "https://github.com/giovannibieller/inito-wp",

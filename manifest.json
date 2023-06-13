@@ -1,5 +1,7 @@
 {
-	"name": "",
+	"name": "INITO WP | Starter Theme",
+	"short_name": "inito wp",
+	"start_url": "/",
 	"icons": [
 		{
 			"src": "./dist/ico/android-chrome-192x192.png",
@@ -14,5 +16,6 @@
 	],
 	"theme_color": "#000000",
 	"background_color": "#000000",
-	"display": "standalone"
+	"display": "standalone",
+	"orientation": "portrait"
 }
