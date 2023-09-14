@@ -158,5 +158,9 @@
         return apply_filters( 'get_the_excerpt', $generated_excerpt, $post );
 
     }
+
+    // Remove Wordpress version from Source Code
+    function remove_version_info() { return ''; }
+    add_filter('the_generator', 'remove_version_info');
     
 ?>
