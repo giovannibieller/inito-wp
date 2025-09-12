@@ -1,5 +1,18 @@
 # INITO WP | Starter Theme
 
+## Init project with Custom Name
+
+```
+#!javascript
+
+npm run init
+```
+
+It will prompt for a name creating:
+
+1. Name for the theme + manifest + style.css
+2. Sanitized slug for the theme + manifest + style.css
+
 ## Install dependencies
 
 ```
@@ -30,6 +43,10 @@ Watch mode will control changes on `scss` and `js` files
 
 You can find the JSON to import in `/imports` folder.
 SEO imports are used for POST, PAGE, TAXONOMY
+
+## Customize Editor Theme
+
+You can customize colors and font sizes of the editor theme changing the `theme.json` file in the root of the project.
 
 ## Build project
 

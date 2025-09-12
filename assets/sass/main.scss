@@ -1,8 +1,8 @@
-@import '../../node_modules/reset-css/sass/_reset.scss';
-@import './components/variables';
-@import './components/colors';
-@import './components/mixins';
-@import './components/helpers';
-@import './components/typo';
-@import './components/animations';
-@import './components/common';
+@use './components/variables' as *;
+@use './components/colors' as *;
+@use './components/mixins' as *;
+@use './components/helpers' as *;
+@use './components/typo' as *;
+@use './components/animations' as *;
+@use './components/search-form' as *;
+@use './components/common' as *;

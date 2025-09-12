@@ -1,7 +1,7 @@
 import gulp, { src, series, parallel, dest } from 'gulp';
 import dartSass from 'sass';
 import gulpSass from 'gulp-sass';
-import del from 'del';
+import { deleteSync } from 'del';
 import notify from 'gulp-notify';
 import uglify from 'gulp-uglify';
 import concat from 'gulp-concat';
@@ -37,6 +37,23 @@ function sassCompiler() {
 			)
 		)
 		.pipe(concat('main.css'))
+		.pipe(dest(paths.dist + '/css'));
+}
+
+/**
+ * Editor styles compiler
+ */
+function editorStylesCompiler() {
+	return src([paths.sass + '/editor-styles.scss'])
+		.pipe(
+			sass({ outputStyle: 'compressed' }).on(
+				'error',
+				notify.onError(function (error) {
+					return 'Editor Styles Error: ' + error.message;
+				})
+			)
+		)
+		.pipe(concat('editor-style.css'))
 		.pipe(dest(paths.dist + '/css'));
 }
 
@@ -90,7 +107,7 @@ function copyFonts() {
  * Clean
  */
 function clean(cb) {
-	del([paths.dist + '/css']);
+	deleteSync([paths.dist + '/css']);
 	cb();
 }
 
@@ -98,7 +115,10 @@ function clean(cb) {
  * Watch
  */
 function watchFiles(cb) {
-	gulp.watch([paths.sass + '/**/*.scss'], series(sassCompiler));
+	gulp.watch(
+		[paths.sass + '/**/*.scss'],
+		series(sassCompiler, editorStylesCompiler)
+	);
 	gulp.watch([paths.js + '/*.js'], series(jsCompiler));
 	cb();
 }
@@ -107,12 +127,13 @@ const build = series(
 	clean,
 	copyImages,
 	copyIco,
-	parallel(sassCompiler, jsCompiler)
+	parallel(sassCompiler, editorStylesCompiler, jsCompiler)
 );
 const watch = parallel(watchFiles);
 
 exports.build = build;
 exports.watch = watch;
 exports.clean = clean;
+exports.editorStylesCompiler = editorStylesCompiler;
 
 exports.default = series(build, watch);

@@ -1,5 +1,5 @@
 <?php
-    // remove admin bar for non admin users
+    // Remove admin bar for non-admin users
     add_action('after_setup_theme', 'remove_admin_bar');
     
     function remove_admin_bar() {
@@ -8,23 +8,67 @@
         }
     }
 
-    //add menu support
-	add_theme_support( 'menus' );
+    // Theme setup
+    function theme_setup() {
+        // Add default posts and comments RSS feed links to head.
+        add_theme_support( 'automatic-feed-links' );
 
-    // add thumbnails support
+        // Let WordPress manage the document title.
+        add_theme_support( 'title-tag' );
+
+        // Enable support for Post Thumbnails on posts and pages.
+        add_theme_support( 'post-thumbnails' );
+
+        // Switch default core markup for search form, comment form, and comments to output valid HTML5.
+        add_theme_support( 'html5', array(
+            'search-form',
+            'comment-form',
+            'comment-list',
+            'gallery',
+            'caption',
+            'style',
+            'script',
+        ) );
+
+        // Add theme support for selective refresh for widgets.
+        add_theme_support( 'customize-selective-refresh-widgets' );
+
+        // Add support for responsive embedded content.
+        add_theme_support( 'responsive-embeds' );
+
+        // Add support for wide alignment.
+        add_theme_support( 'align-wide' );
+
+        // Add support for block styles.
+        add_theme_support( 'wp-block-styles' );
+
+        // Add menu support
+        add_theme_support( 'menus' );
+        
+        // Define custom image sizes
+        add_image_size( 'hero-image', 1200, 600, true );
+        add_image_size( 'card-thumb', 400, 300, true );
+        add_image_size( 'post-thumb', 800, 450, true );
+    }
+    add_action( 'after_setup_theme', 'theme_setup' );
+
+    // Add thumbnails support
     add_theme_support( 'post-thumbnails' ); 
 
-    // register main menu
-    function register_menus() {
-		register_nav_menus(
-			array(
-				'main' => __( 'Main Menu' )
-			)
-		);
-	}
-	add_action( 'init', 'register_menus' );
+    // Add menu support
+    add_theme_support( 'menus' );
 
-    // body page classes
+    // Register Main menu
+    function register_menus() {
+      register_nav_menus(
+        array(
+          'main' => __( 'Main Menu' )
+        )
+      );
+    } 
+    add_action( 'init', 'register_menus' );
+
+    // Add body classes
     function body_classes()
     {
         $catClass = '';
@@ -49,7 +93,7 @@
         echo $catClass;
     }
 
-    // add current item class
+    // Add current item class
     function add_current_nav_class($classes, $item) {
     
         // Getting the current post details
@@ -72,7 +116,7 @@
     
     }
 
-    // post types for search
+    // Include custom post types in search results
     function include_custom_post_types( $query ) {
         $custom_post_type = get_query_var( 'post_type' );
     
@@ -90,7 +134,7 @@
     }
     add_filter( 'pre_get_posts' , 'include_custom_post_types' );
 
-    // add SVG
+    // Allow SVG uploads
     function cc_mime_types($mimes) {
         $mimes['svg'] = 'image/svg+xml';
         return $mimes;
@@ -98,9 +142,7 @@
     add_filter('upload_mimes', 'cc_mime_types');
 
     // Move Yoast SEO to bottom
-    function yoasttobottom() {
-        return 'low';
-    }
+    function yoasttobottom() { return 'low'; }
     add_filter( 'wpseo_metabox_prio', 'yoasttobottom');
 
     // Load Translations
@@ -109,16 +151,12 @@
     }
     add_action( 'after_setup_theme', 'wp_inito_load_theme_textdomain' );
 
-    // function default_site_locale( $locale ) {
-    //     $default_locale = 'en_US';
-    //     return $default_locale;
-    // }
-    // add_filter( 'locale', 'default_site_locale' );
-
+    // Register tr() function
     function tr($text){
         return _e($text, 'inito-wp-theme');
     }
 
+    // Register ACF options pages
     if( function_exists('acf_add_options_page') ) {
         acf_add_options_page(array(
             'page_title'    => 'SEO Settings',
@@ -156,11 +194,115 @@
         $generated_excerpt = wp_trim_words( $text, $num_words );
 
         return apply_filters( 'get_the_excerpt', $generated_excerpt, $post );
-
     }
 
     // Remove Wordpress version from Source Code
     function remove_version_info() { return ''; }
     add_filter('the_generator', 'remove_version_info');
+
+    // Security improvements
+    function theme_security_headers() {
+        // Remove WordPress version from RSS feeds
+        add_filter('the_generator', '__return_empty_string');
+        
+        // Hide WordPress version from scripts and styles
+        function remove_version_scripts_styles($src) {
+            if (strpos($src, 'ver=')) {
+                $src = remove_query_arg('ver', $src);
+            }
+            return $src;
+        }
+        add_filter('style_loader_src', 'remove_version_scripts_styles', 9999);
+        add_filter('script_loader_src', 'remove_version_scripts_styles', 9999);
+    }
+    add_action('init', 'theme_security_headers');
+
+    // Disable file editing in WordPress admin
+    if (!defined('DISALLOW_FILE_EDIT')) {
+        define('DISALLOW_FILE_EDIT', true);
+    }
+
+    // Performance optimizations
+    function theme_performance_optimizations() {
+        // Remove emoji scripts and styles
+        remove_action('wp_head', 'print_emoji_detection_script', 7);
+        remove_action('wp_print_styles', 'print_emoji_styles');
+        remove_action('admin_print_scripts', 'print_emoji_detection_script');
+        remove_action('admin_print_styles', 'print_emoji_styles');
+        
+        // Remove unnecessary WordPress features
+        remove_action('wp_head', 'rsd_link');
+        remove_action('wp_head', 'wp_generator');
+        remove_action('wp_head', 'wlwmanifest_link');
+        remove_action('wp_head', 'wp_shortlink_wp_head');
+        
+        // Remove feed links (unless you need them)
+        remove_action('wp_head', 'feed_links', 2);
+        remove_action('wp_head', 'feed_links_extra', 3);
+    }
+    add_action('init', 'theme_performance_optimizations');
+
+    // Defer parsing of JavaScript
+    function defer_parsing_of_js($url) {
+        if (is_admin()) return $url; // Don't defer in admin
+        if (FALSE === strpos($url, '.js')) return $url; // Not a JS file
+        if (strpos($url, 'jquery.js')) return $url; // Don't defer jQuery
+        return str_replace(' src', ' defer src', $url);
+    }
+    add_filter('script_loader_tag', 'defer_parsing_of_js', 10);
+
+    // Proper asset enqueueing
+    function theme_enqueue_assets() {
+        $theme_version = wp_get_theme()->get('Version');
+
+        // Enqueue theme styles
+        wp_enqueue_style( 
+            'theme-main-style', 
+            get_template_directory_uri() . '/dist/css/main.css', 
+            array(), 
+            $theme_version
+        );
+        
+        // Enqueue theme scripts
+        wp_enqueue_script( 
+            'theme-main-script', 
+            get_template_directory_uri() . '/dist/js/main.min.js', 
+            array(), 
+            $theme_version, 
+            true // Load in footer
+        );
+    }
+    add_action( 'wp_enqueue_scripts', 'theme_enqueue_assets' );
+
+    // Add editor styles
+    function theme_add_editor_styles() {
+        add_theme_support( 'editor-styles' );
+        add_editor_style( 'dist/css/editor-style.css' );
+    }
+    add_action( 'after_setup_theme', 'theme_add_editor_styles' );
+
+    // Register widget areas
+    function theme_widgets_init() {
+        register_sidebar(array(
+            'name'          => __('Primary Sidebar', 'inito-wp-theme'),
+            'id'            => 'sidebar-1',
+            'description'   => __('Add widgets here to appear in your sidebar.', 'inito-wp-theme'),
+            'before_widget' => '<section id="%1$s" class="widget %2$s">',
+            'after_widget'  => '</section>',
+            'before_title'  => '<h3 class="widget-title">',
+            'after_title'   => '</h3>',
+        ));
+
+        register_sidebar(array(
+            'name'          => __('Footer Widget Area', 'inito-wp-theme'),
+            'id'            => 'footer-1',
+            'description'   => __('Add widgets here to appear in your footer.', 'inito-wp-theme'),
+            'before_widget' => '<section id="%1$s" class="widget %2$s">',
+            'after_widget'  => '</section>',
+            'before_title'  => '<h4 class="widget-title">',
+            'after_title'   => '</h4>',
+        ));
+    }
+    add_action( 'widgets_init', 'theme_widgets_init' );
     
 ?>

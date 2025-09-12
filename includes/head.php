@@ -5,9 +5,9 @@
         
         <?php wp_head(); ?>
 
-        <link rel="stylesheet" href="<?php echo $tmpDir;?>/dist/css/main.css?v=<?php echo $version; ?>">
-
         <?php include (TEMPLATEPATH . "/includes/favicons.php"); ?>
         <?php include (TEMPLATEPATH . "/includes/google_analytics.php"); ?>
+
+    </head>
 
     <body class="<?php body_classes(); ?>">
