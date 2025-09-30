@@ -1,7 +1,7 @@
 import gulp, { src, series, parallel, dest } from 'gulp';
-import dartSass from 'sass';
+import * as dartSass from 'sass';
 import gulpSass from 'gulp-sass';
-import { deleteSync } from 'del';
+import { deleteAsync } from 'del';
 import notify from 'gulp-notify';
 import uglify from 'gulp-uglify';
 import concat from 'gulp-concat';
@@ -64,6 +64,7 @@ function jsCompiler() {
 	return src([paths.js + '/main.js'])
 		.pipe(
 			webpack({
+				mode: 'production',
 				output: {
 					filename: 'main.min.js',
 				},
@@ -106,8 +107,8 @@ function copyFonts() {
 /**
  * Clean
  */
-function clean(cb) {
-	deleteSync([paths.dist + '/css']);
+async function clean(cb) {
+	await deleteAsync([paths.dist + '/css']);
 	cb();
 }
 
@@ -131,9 +132,5 @@ const build = series(
 );
 const watch = parallel(watchFiles);
 
-exports.build = build;
-exports.watch = watch;
-exports.clean = clean;
-exports.editorStylesCompiler = editorStylesCompiler;
-
-exports.default = series(build, watch);
+export { build, watch, clean, editorStylesCompiler };
+export default series(build, watch);

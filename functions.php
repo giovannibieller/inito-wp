@@ -1,4 +1,18 @@
 <?php
+    // Include security enhancements
+    require_once get_template_directory() . '/includes/security.php';
+    
+    // Include performance optimizations
+    require_once get_template_directory() . '/includes/performance.php';
+    
+    // Include performance monitoring (only in debug mode)
+    if (defined('WP_DEBUG') && WP_DEBUG) {
+        require_once get_template_directory() . '/includes/performance-monitor.php';
+    }
+    
+    // Include accessibility enhancements
+    require_once get_template_directory() . '/includes/accessibility.php';
+    
     // Remove admin bar for non-admin users
     add_action('after_setup_theme', 'remove_admin_bar');
     
@@ -42,31 +56,33 @@
         // Add support for block styles.
         add_theme_support( 'wp-block-styles' );
 
+        // Add support for editor styles.
+        add_theme_support( 'editor-styles' );
+        add_editor_style( 'assets/css/editor-styles.css' );
+
         // Add menu support
         add_theme_support( 'menus' );
+        
+        // Add custom logo support
+        add_theme_support( 'custom-logo', array(
+            'height'      => 100,
+            'width'       => 400,
+            'flex-height' => true,
+            'flex-width'  => true,
+        ) );
         
         // Define custom image sizes
         add_image_size( 'hero-image', 1200, 600, true );
         add_image_size( 'card-thumb', 400, 300, true );
         add_image_size( 'post-thumb', 800, 450, true );
+        
+        // Register navigation menus
+        register_nav_menus( array(
+            'primary' => __( 'Primary Menu', 'inito-wp' ),
+            'footer'  => __( 'Footer Menu', 'inito-wp' ),
+        ) );
     }
     add_action( 'after_setup_theme', 'theme_setup' );
-
-    // Add thumbnails support
-    add_theme_support( 'post-thumbnails' ); 
-
-    // Add menu support
-    add_theme_support( 'menus' );
-
-    // Register Main menu
-    function register_menus() {
-      register_nav_menus(
-        array(
-          'main' => __( 'Main Menu' )
-        )
-      );
-    } 
-    add_action( 'init', 'register_menus' );
 
     // Add body classes
     function body_classes()
@@ -200,7 +216,7 @@
     function remove_version_info() { return ''; }
     add_filter('the_generator', 'remove_version_info');
 
-    // Security improvements
+    // Enhanced Security improvements
     function theme_security_headers() {
         // Remove WordPress version from RSS feeds
         add_filter('the_generator', '__return_empty_string');
@@ -214,6 +230,28 @@
         }
         add_filter('style_loader_src', 'remove_version_scripts_styles', 9999);
         add_filter('script_loader_src', 'remove_version_scripts_styles', 9999);
+        
+        // Add security headers
+        if (!is_admin()) {
+            header('X-Content-Type-Options: nosniff');
+            header('X-Frame-Options: SAMEORIGIN');
+            header('X-XSS-Protection: 1; mode=block');
+            header('Referrer-Policy: strict-origin-when-cross-origin');
+            header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
+            
+            // Content Security Policy
+            $csp = "default-src 'self'; ";
+            $csp .= "script-src 'self' 'unsafe-inline' 'unsafe-eval' *.googleapis.com *.googletagmanager.com *.google-analytics.com; ";
+            $csp .= "style-src 'self' 'unsafe-inline' *.googleapis.com *.gstatic.com; ";
+            $csp .= "font-src 'self' *.googleapis.com *.gstatic.com data:; ";
+            $csp .= "img-src 'self' data: *.gravatar.com *.w.org *.google-analytics.com *.googletagmanager.com; ";
+            $csp .= "connect-src 'self' *.google-analytics.com *.analytics.google.com *.googletagmanager.com; ";
+            $csp .= "frame-src 'self' *.youtube.com *.vimeo.com *.google.com; ";
+            $csp .= "object-src 'none'; ";
+            $csp .= "base-uri 'self';";
+            
+            header('Content-Security-Policy: ' . $csp);
+        }
     }
     add_action('init', 'theme_security_headers');
 
@@ -221,6 +259,115 @@
     if (!defined('DISALLOW_FILE_EDIT')) {
         define('DISALLOW_FILE_EDIT', true);
     }
+
+    // Additional security measures
+    function theme_additional_security() {
+        // Remove WordPress version from head
+        remove_action('wp_head', 'wp_generator');
+        
+        // Remove version from RSS
+        add_filter('the_generator', '__return_empty_string');
+        
+        // Disable XML-RPC (if not needed)
+        add_filter('xmlrpc_enabled', '__return_false');
+        
+        // Remove really simple discovery link
+        remove_action('wp_head', 'rsd_link');
+        
+        // Remove wlwmanifest.xml (Windows Live Writer)
+        remove_action('wp_head', 'wlwmanifest_link');
+        
+        // Remove the REST API endpoint
+        remove_action('wp_head', 'rest_output_link_wp_head', 10);
+        remove_action('wp_head', 'wp_oembed_add_discovery_links', 10);
+        
+        // Disable pingbacks
+        function disable_pingback(&$links) {
+            foreach($links as $l => $link)
+                if(0 === strpos($link, get_option('home')))
+                    unset($links[$l]);
+        }
+        add_action('pre_ping', 'disable_pingback');
+        
+        // Disable self pingbacks
+        function no_self_ping(&$links) {
+            $home = get_option('home');
+            foreach($links as $l => $link)
+                if(0 === strpos($link, $home))
+                    unset($links[$l]);
+        }
+        add_action('pre_ping', 'no_self_ping');
+        
+        // Remove query strings from static resources
+        function remove_script_version($src){
+            $parts = explode('?ver', $src);
+            return $parts[0];
+        }
+        add_filter('script_loader_src', 'remove_script_version', 15, 1);
+        add_filter('style_loader_src', 'remove_script_version', 15, 1);
+        
+        // Hide login errors
+        function hide_login_errors(){
+            return 'Something is wrong!';
+        }
+        add_filter('login_errors', 'hide_login_errors');
+        
+        // Remove author pages to prevent username enumeration
+        function disable_author_pages() {
+            global $wp_query;
+            if (is_author()) {
+                $wp_query->set_404();
+                status_header(404);
+            }
+        }
+        add_action('template_redirect', 'disable_author_pages');
+        
+        // Disable user enumeration
+        function disable_user_enumeration($redirect, $request) {
+            if (preg_match('/\?author=([0-9]*)/i', $request)) {
+                wp_redirect(home_url(), 301);
+                exit;
+            }
+        }
+        add_filter('redirect_canonical', 'disable_user_enumeration', 10, 2);
+    }
+    add_action('init', 'theme_additional_security');
+    
+    // Secure file uploads
+    function secure_file_uploads($mimes) {
+        // Remove potentially dangerous file types
+        unset($mimes['exe']);
+        unset($mimes['com']);
+        unset($mimes['bat']);
+        unset($mimes['pif']);
+        unset($mimes['scr']);
+        unset($mimes['vbs']);
+        unset($mimes['lnk']);
+        
+        return $mimes;
+    }
+    add_filter('upload_mimes', 'secure_file_uploads');
+    
+    // Limit login attempts (basic implementation)
+    function limit_login_attempts() {
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $attempts = get_transient('login_attempts_' . $ip);
+        
+        if ($attempts && $attempts >= 5) {
+            wp_die('Too many login attempts. Please try again later.');
+        }
+    }
+    add_action('wp_login_failed', function() {
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $attempts = get_transient('login_attempts_' . $ip);
+        $attempts = $attempts ? $attempts + 1 : 1;
+        set_transient('login_attempts_' . $ip, $attempts, 15 * MINUTE_IN_SECONDS);
+    });
+    add_action('wp_login', function() {
+        $ip = $_SERVER['REMOTE_ADDR'];
+        delete_transient('login_attempts_' . $ip);
+    });
+    add_action('login_form', 'limit_login_attempts');
 
     // Performance optimizations
     function theme_performance_optimizations() {

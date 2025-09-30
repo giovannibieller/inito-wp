@@ -1,115 +1,90 @@
-# INITO WP | Starter Theme
+# INITO WordPress Starter Theme
 
-## Init project with Custom Name
+A modern, performance-optimized WordPress starter theme with comprehensive security features, accessibility compliance, and enterprise-grade development practices.
 
-```
-#!javascript
+## 🚀 Key Features
 
-npm run init
-```
+- **🎨 Modern WordPress 6.x**: Full block editor support with modern theme architecture
+- **🛡️ Security Hardened**: Comprehensive headers, CSP implementation, and vulnerability protection
+- **⚡ Performance Optimized**: Core Web Vitals optimized with lazy loading and caching
+- **♿ Accessibility Ready**: WCAG AA compliance with keyboard navigation and screen reader support
+- **🏗️ Modern Build System**: ES modules with Gulp and Node.js 20 LTS
+- **📝 Conventional Commits**: Commitlint configuration with Husky hooks
 
-It will prompt for a name creating:
+## 🎯 Quick Start
 
-1. Name for the theme + manifest + style.css
-2. Sanitized slug for the theme + manifest + style.css
+### Prerequisites
 
-## Install dependencies
+- Node.js 20 LTS
+- WordPress 6.0+
+- PHP 8.0+
 
-```
-#!javascript
+### Installation
 
-npm install
-```
+```bash
+# Clone and install
+git clone <repository-url> wp-content/themes/inito-wp
+cd wp-content/themes/inito-wp
+nvm use && npm install
 
-## Run DEV SERVER with WP-ENV
-
-```
-#!javascript
-
+# Build assets and start development
+npm run build
 npm start
 ```
 
-## Run Assets Watch Compiler without WP-ENV
+## 📚 Documentation
 
-```
-#!javascript
+Our comprehensive documentation is organized into focused guides:
 
-gulp watch
-```
+- **[📦 Installation Guide](docs/INSTALLATION.md)** - Setup, prerequisites, and configuration
+- **[🛠️ Development Guide](docs/DEVELOPMENT.md)** - Workflow, scripts, and coding standards
+- **[✨ Features Overview](docs/FEATURES.md)** - Complete feature documentation
+- **[🛡️ Security Guide](docs/SECURITY.md)** - Security features and best practices
+- **[⚡ Performance Guide](docs/PERFORMANCE.md)** - Optimization strategies and monitoring
+- **[🔧 Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
 
-Watch mode will control changes on `scss` and `js` files
+## 🏗️ Architecture
 
-## ACF SEO Fields import
+### Template System
 
-You can find the JSON to import in `/imports` folder.
-SEO imports are used for POST, PAGE, TAXONOMY
+Uses modular includes-based architecture:
 
-## Customize Editor Theme
+- `includes/head.php` - HTML head with SEO and meta tags
+- `includes/footer.php` - Footer section with scripts
+- `includes/security.php` - Security features and headers
+- `includes/performance.php` - Performance optimizations
+- `includes/accessibility.php` - WCAG compliance features
 
-You can customize colors and font sizes of the editor theme changing the `theme.json` file in the root of the project.
+### Tech Stack
 
-## Build project
+- **Build**: Gulp with ES modules (`gulpfile.mjs`)
+- **CSS**: Sass with modular components
+- **JS**: Modern ES6+ with performance optimizations
+- **PHP**: 8.0+ compatible with WordPress best practices
 
-```
-#!javascript
+## 🤝 Contributing
 
-npm run build
-```
-
-After the build command a new /dist folder will be created with: css, img, ico, js directories inside.
-On deployment you can avoid /assets /node_modules directories.
-
-## Conventional Commits
-
-This project uses [Conventional Commits](https://www.conventionalcommits.org/) specification for commit messages. Commits are automatically validated using commitlint.
-
-### Commit Message Format
-
-```
-<type>[optional scope]: <description>
-
-[optional body]
-
-[optional footer(s)]
-```
-
-### Types
-
-- **feat**: A new feature
-- **fix**: A bug fix
-- **docs**: Documentation only changes
-- **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
-- **refactor**: A code change that neither fixes a bug nor adds a feature
-- **perf**: A code change that improves performance
-- **test**: Adding missing tests or correcting existing tests
-- **build**: Changes that affect the build system or external dependencies
-- **ci**: Changes to our CI configuration files and scripts
-- **chore**: Other changes that don't modify src or test files
-- **revert**: Reverts a previous commit
-
-### Examples
+This project uses [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```bash
-feat: add user authentication system
-fix: resolve mobile navigation bug
+feat: add new hero section layout
+fix: resolve mobile navigation accessibility issue
 docs: update installation instructions
-style: format PHP files according to WordPress standards
-refactor: simplify database query logic
 perf: optimize image loading performance
-test: add unit tests for user registration
-build: update gulp configuration for Sass compilation
-ci: add GitHub Actions workflow
-chore: update dependencies
 ```
 
-### Rules
+See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for detailed contribution guidelines.
 
-- Subject line must be lowercase
-- Subject line must not end with a period
-- Subject line must be 50 characters or less
-- Body and footer lines must be 72 characters or less
+## 📄 License
 
-### Scripts
+GPL v2 or later
 
-- `npm run commitlint:check` - Check the last commit message
-- Test your commit message: `echo "feat: add new feature" | npx commitlint`
+## 🆘 Support
+
+- 📖 **Documentation**: `/docs/` folder for detailed guides
+- 🐛 **Issues**: [GitHub Issues](repository-issues-url)
+- 💬 **Discussions**: [GitHub Discussions](repository-discussions-url)
+
+---
+
+Made with ❤️ for the WordPress community

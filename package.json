@@ -1,6 +1,6 @@
 {
 	"name": "inito-wp-theme",
-	"version": "1.0.1",
+	"version": "1.0.0",
 	"description": "INITO WP | Starter Theme",
 	"main": "index.php",
 	"repository": "https://github.com/giovannibieller/inito-wp",
@@ -18,6 +18,10 @@
 	},
 	"author": "",
 	"license": "ISC",
+	"engines": {
+		"node": ">=20.0.0",
+		"npm": ">=10.0.0"
+	},
 	"themeName": "INITO WP | Starter Theme",
 	"devDependencies": {
 		"@babel/core": "^7.28.4",
