@@ -173,21 +173,24 @@
     }
 
     // Register ACF options pages
-    if( function_exists('acf_add_options_page') ) {
-        acf_add_options_page(array(
-            'page_title'    => 'SEO Settings',
-            'menu_title'    => 'SEO Settings',
-            'menu_slug'     => 'seo-settings',
-            'post_id'     => 'seo-settings',
-        ));
+    function register_acf_options_pages() {
+        if( function_exists('acf_add_options_page') ) {
+            acf_add_options_page(array(
+                'page_title'    => 'SEO Settings',
+                'menu_title'    => 'SEO Settings',
+                'menu_slug'     => 'seo-settings',
+                'post_id'     => 'seo-settings',
+            ));
 
-        acf_add_options_page(array(
-            'page_title'    => 'Utils',
-            'menu_title'    => 'Utils',
-            'menu_slug'     => 'utils',
-            'post_id'     => 'utils',
-        ));
+            acf_add_options_page(array(
+                'page_title'    => 'Utils',
+                'menu_title'    => 'Utils',
+                'menu_slug'     => 'utils',
+                'post_id'     => 'utils',
+            ));
+        }
     }
+    add_action('acf/init', 'register_acf_options_pages');
 
     /**
      * Return the post excerpt, if one is set, else generate it using the
@@ -451,5 +454,3 @@
         ));
     }
     add_action( 'widgets_init', 'theme_widgets_init' );
-    
-?>

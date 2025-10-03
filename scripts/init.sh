@@ -237,14 +237,6 @@ replace_in_file "functions.php" "$CURRENT_SLUG" "$NEW_SLUG" "text domain"
 
 print_success "Theme renamed successfully!"
 
-# Fix script permissions
-print_status "Setting execute permissions for shell scripts..."
-if chmod +x scripts/*.sh 2>/dev/null; then
-    print_success "Script permissions updated successfully"
-else
-    print_warning "Could not update script permissions automatically"
-fi
-
 # STEP 2: Reset Git Repository
 echo ""
 print_status "STEP 2: Git Repository Reset"
