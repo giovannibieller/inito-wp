@@ -462,16 +462,73 @@ function inito_get_accessibility_level() {
  */
 function inito_accessibility_admin_notice() {
     if (current_user_can('manage_options')) {
-        $level = inito_get_accessibility_level();
-        echo '<div class="notice notice-info"><p>';
-        echo sprintf(
-            __('This theme aims for WCAG %s compliance. Check the accessibility documentation for details.', 'inito-wp'),
-            esc_html($level)
-        );
-        echo '</p></div>';
+        // Check if notice has been dismissed
+        $dismissed = get_user_meta(get_current_user_id(), 'inito_accessibility_notice_dismissed', true);
+        
+        if (!$dismissed) {
+            $level = inito_get_accessibility_level();
+            echo '<div class="notice notice-info is-dismissible" data-notice="inito-accessibility"><p>';
+            echo sprintf(
+                __('This theme aims for WCAG %s compliance. Check the accessibility documentation for details.', 'inito-wp'),
+                esc_html($level)
+            );
+            echo '</p>';
+            echo '<button type="button" class="notice-dismiss inito-dismiss-forever" data-notice="inito-accessibility">';
+            echo '<span class="screen-reader-text">' . __('Dismiss this notice permanently.', 'inito-wp') . '</span>';
+            echo '</button>';
+            echo '</div>';
+        }
     }
 }
 add_action('admin_notices', 'inito_accessibility_admin_notice');
+
+/**
+ * Handle AJAX request to dismiss accessibility notice permanently
+ */
+function inito_dismiss_accessibility_notice() {
+    // Verify nonce for security
+    if (!wp_verify_nonce($_POST['nonce'], 'inito_dismiss_notice')) {
+        wp_die('Security check failed.');
+    }
+    
+    // Check user permissions
+    if (!current_user_can('manage_options')) {
+        wp_die('Insufficient permissions.');
+    }
+    
+    // Save dismissal preference
+    update_user_meta(get_current_user_id(), 'inito_accessibility_notice_dismissed', true);
+    
+    wp_send_json_success();
+}
+add_action('wp_ajax_inito_dismiss_accessibility_notice', 'inito_dismiss_accessibility_notice');
+
+/**
+ * Enqueue admin scripts for notice dismissal
+ */
+function inito_admin_notice_scripts($hook) {
+    // Only load on admin pages
+    if (!is_admin()) {
+        return;
+    }
+    
+    wp_enqueue_script(
+        'inito-admin-notices',
+        get_template_directory_uri() . '/assets/js/admin-notices.js',
+        array('jquery'),
+        wp_get_theme()->get('Version'),
+        true
+    );
+    
+    wp_localize_script('inito-admin-notices', 'initoAdmin', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('inito_dismiss_notice'),
+        'strings' => array(
+            'error' => __('Error dismissing notice.', 'inito-wp')
+        )
+    ));
+}
+add_action('admin_enqueue_scripts', 'inito_admin_notice_scripts');
 
 /**
  * Accessibility testing function

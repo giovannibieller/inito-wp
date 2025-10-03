@@ -71,10 +71,18 @@ class INITO_Performance_Monitor {
         global $wpdb;
         
         $this->metrics['database_queries'] = $wpdb->num_queries;
-        $this->metrics['database_time'] = $wpdb->query_time;
+        
+        // Calculate total query time from saved queries
+        $total_query_time = 0;
+        if (defined('SAVEQUERIES') && SAVEQUERIES && !empty($wpdb->queries)) {
+            foreach ($wpdb->queries as $query) {
+                $total_query_time += $query[1];
+            }
+        }
+        $this->metrics['database_time'] = $total_query_time;
         
         // Store slow queries if any
-        if (defined('SAVEQUERIES') && SAVEQUERIES) {
+        if (defined('SAVEQUERIES') && SAVEQUERIES && !empty($wpdb->queries)) {
             $slow_queries = array();
             foreach ($wpdb->queries as $query) {
                 if ($query[1] > 0.05) { // Queries taking more than 50ms
