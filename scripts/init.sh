@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# Script to rename "INITO WP | Starter Theme" and "inito-wp-theme" throughout the project
+# Script to initialize "INITO WP | Starter Theme" for new projects
+# - Reset git repository (remove connection to original repo)
+# - Rename theme throughout the project
 # Author: Giovanni Bieller
 
 # Colors for output
@@ -35,9 +37,111 @@ sanitize_for_slug() {
 }
 
 # Welcome message
-echo -e "${BLUE}========================================${NC}"
-echo -e "${BLUE}    INITO WP Theme Rename Script${NC}"
-echo -e "${BLUE}========================================${NC}"
+echo -e "${BLUE}============================================${NC}"
+echo -e "${BLUE}    INITO WP Theme Initialization Script${NC}"
+echo -e "${BLUE}============================================${NC}"
+echo ""
+echo -e "${BLUE}This script will:${NC}"
+echo "  1. Rename the theme throughout the project"
+echo "  2. Reset the git repository (remove connection to original repo)"
+echo "  3. Optionally set up your new git repository"
+echo ""
+
+# STEP 1: Get the new theme name and rename theme
+
+# Function to reset git repository
+reset_git_repository() {
+    print_status "Resetting git repository..."
+    
+    if [ ! -d ".git" ]; then
+        print_warning "No .git directory found. Creating new git repository..."
+    else
+        # Get current remote URL to show user what will be removed
+        CURRENT_REMOTE=$(git remote get-url origin 2>/dev/null || echo "No remote origin found")
+        
+        if [ "$CURRENT_REMOTE" != "No remote origin found" ]; then
+            print_status "Removing connection to: ${YELLOW}${CURRENT_REMOTE}${NC}"
+        fi
+        
+        print_status "Removing existing .git directory..."
+        rm -rf .git
+        
+        if [ $? -eq 0 ]; then
+            print_success "Old git repository removed"
+        else
+            print_error "Failed to remove .git directory"
+            return 1
+        fi
+    fi
+    
+    print_status "Initializing new git repository..."
+    git init
+    
+    if [ $? -eq 0 ]; then
+        print_success "New git repository initialized"
+        return 0
+    else
+        print_error "Failed to initialize new git repository"
+        return 1
+    fi
+}
+
+# Function to setup git remote and initial commit
+setup_git_remote() {
+    echo ""
+    print_status "Git Repository Setup"
+    echo ""
+    read -p "Enter your new git repository URL (optional, press Enter to skip): " NEW_REPO_URL
+    
+    if [ ! -z "$NEW_REPO_URL" ]; then
+        print_status "Adding remote origin: ${YELLOW}${NEW_REPO_URL}${NC}"
+        git remote add origin "$NEW_REPO_URL"
+        
+        if [ $? -eq 0 ]; then
+            print_success "Remote origin added successfully"
+        else
+            print_error "Failed to add remote origin"
+            return 1
+        fi
+    else
+        print_status "Skipping remote setup. You can add it later with:"
+        echo -e "  ${BLUE}git remote add origin <your-repo-url>${NC}"
+    fi
+    
+    # Create initial commit with the new theme name
+    print_status "Creating initial commit..."
+    git add .
+    git commit -m "Initial commit: ${NEW_NAME}"
+    
+    if [ $? -eq 0 ]; then
+        print_success "Initial commit created"
+        
+        if [ ! -z "$NEW_REPO_URL" ]; then
+            echo ""
+            read -p "Do you want to push to the remote repository now? (y/N): " PUSH_NOW
+            
+            if [[ $PUSH_NOW =~ ^[Yy]$ ]]; then
+                print_status "Pushing to remote repository..."
+                git push -u origin main
+                
+                if [ $? -eq 0 ]; then
+                    print_success "Successfully pushed to remote repository!"
+                else
+                    print_error "Failed to push to remote repository"
+                    print_status "You can push later with: ${BLUE}git push -u origin main${NC}"
+                fi
+            else
+                print_status "You can push later with: ${BLUE}git push -u origin main${NC}"
+            fi
+        fi
+    else
+        print_error "Failed to create initial commit"
+        return 1
+    fi
+}
+
+# STEP 1: Get the new theme name and rename theme
+print_status "STEP 1: Theme Configuration"
 echo ""
 
 # Get the current theme name and slug
@@ -48,7 +152,7 @@ print_status "Current theme slug: ${YELLOW}${CURRENT_SLUG}${NC}"
 
 # Prompt for new theme name
 echo ""
-read -p "Enter the new theme name: " NEW_NAME
+read -p "Enter your new theme name: " NEW_NAME
 
 # Validate input
 if [ -z "$NEW_NAME" ]; then
@@ -71,30 +175,18 @@ fi
 
 # Confirm the change
 echo ""
-print_warning "This will replace all occurrences of:"
-echo -e "  Theme Name - FROM: ${RED}${CURRENT_NAME}${NC}"
-echo -e "  Theme Name - TO:   ${GREEN}${NEW_NAME}${NC}"
-echo -e "  Theme Slug - FROM: ${RED}${CURRENT_SLUG}${NC}"
-echo -e "  Theme Slug - TO:   ${GREEN}${NEW_SLUG}${NC}"
-echo ""
-print_warning "Files that will be modified:"
-echo "  - package.json (name and themeName)"
-echo "  - package-lock.json (name)"
-echo "  - style.css (theme name and text domain)"
-echo "  - manifest.json (name and short_name)"
-echo "  - functions.php (text domain)"
-echo "  - README.md (title)"
+print_status "Theme will be renamed to:"
+echo -e "  Name: ${GREEN}${NEW_NAME}${NC}"
+echo -e "  Slug: ${GREEN}${NEW_SLUG}${NC}"
 echo ""
 
-read -p "Are you sure you want to proceed? (y/N): " CONFIRM
-
-if [[ ! $CONFIRM =~ ^[Yy]$ ]]; then
+read -p "Proceed with theme rename? (Y/n): " CONFIRM_RENAME
+if [[ $CONFIRM_RENAME =~ ^[Nn]$ ]]; then
     print_status "Operation cancelled."
     exit 0
 fi
 
-echo ""
-print_status "Starting theme rename process..."
+print_status "Renaming theme files..."
 
 # Function to replace text in file
 replace_in_file() {
@@ -128,49 +220,58 @@ replace_in_file "style.css" "$CURRENT_SLUG" "$NEW_SLUG" "text domain"
 replace_in_file "manifest.json" "$CURRENT_SLUG" "$NEW_SLUG" "short name"
 replace_in_file "functions.php" "$CURRENT_SLUG" "$NEW_SLUG" "text domain"
 
+print_success "Theme renamed successfully!"
+
+# STEP 2: Reset Git Repository
 echo ""
-print_success "Theme rename completed!"
-print_status "New theme name: ${GREEN}${NEW_NAME}${NC}"
-print_status "New theme slug: ${GREEN}${NEW_SLUG}${NC}"
-
-# Show summary of changes
+print_status "STEP 2: Git Repository Reset"
 echo ""
-print_status "Summary of changes:"
-echo -e "${YELLOW}Theme Name Changes:${NC}"
 
-# Files that should contain the new theme name
-NAME_FILES=("package.json" "style.css" "manifest.json" "README.md")
-for file in "${NAME_FILES[@]}"; do
-    if [ -f "$file" ]; then
-        if grep -q "$NEW_NAME" "$file" 2>/dev/null; then
-            echo "  ✓ $file"
-        else
-            echo "  ✗ $file (no changes detected)"
-        fi
-    fi
-done
+if reset_git_repository; then
+    print_success "Git repository reset completed!"
+else
+    print_error "Git repository reset failed!"
+    exit 1
+fi
 
-echo -e "${YELLOW}Theme Slug Changes:${NC}"
+# STEP 3: Setup new git repository
+setup_git_remote
 
-# Files that should contain the new theme slug
-SLUG_FILES=("package.json" "package-lock.json" "style.css" "manifest.json" "functions.php")
-for file in "${SLUG_FILES[@]}"; do
-    if [ -f "$file" ]; then
-        if grep -q "$NEW_SLUG" "$file" 2>/dev/null; then
-            echo "  ✓ $file"
-        else
-            echo "  ✗ $file (no changes detected)"
-        fi
-    fi
-done
+# STEP 3: Setup new git repository
+setup_git_remote
 
+# Final Summary
 echo ""
-print_status "Don't forget to:"
-echo "  1. Update any other references in your code"
-echo "  2. Test your WordPress theme"
-echo "  3. Update documentation if needed"
-echo "  4. Clear any caches (npm, WordPress, etc.)"
-echo "  5. Update translation files in /lang/ directory if needed"
+print_success "============================================"
+print_success "    Initialization Completed Successfully!"
+print_success "============================================"
+echo ""
+print_status "Summary:"
+echo -e "  ✓ Theme renamed to: ${GREEN}${NEW_NAME}${NC}"
+echo -e "  ✓ Theme slug: ${GREEN}${NEW_SLUG}${NC}"
+echo -e "  ✓ Git repository reset and initialized"
+echo -e "  ✓ Initial commit created"
+
+# Show git status
+if git remote get-url origin >/dev/null 2>&1; then
+    REMOTE_URL=$(git remote get-url origin)
+    echo -e "  ✓ Remote repository: ${GREEN}${REMOTE_URL}${NC}"
+else
+    echo -e "  • No remote repository configured"
+fi
 
 echo ""
-print_success "Script completed successfully!"
+print_status "Next steps:"
+echo "  1. Test your WordPress theme"
+echo "  2. Update any additional references in your code"
+echo "  3. Clear any caches (npm, WordPress, etc.)"
+echo "  4. Update translation files in /lang/ directory if needed"
+
+if ! git remote get-url origin >/dev/null 2>&1; then
+    echo "  5. Add your remote repository when ready:"
+    echo -e "     ${BLUE}git remote add origin <your-repo-url>${NC}"
+    echo -e "     ${BLUE}git push -u origin main${NC}"
+fi
+
+echo ""
+print_success "Your theme is ready for development!"

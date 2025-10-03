@@ -38,18 +38,40 @@ nvm use
 npm install
 ```
 
-### 3. Theme Initialization (Optional)
+### 3. Theme Initialization
 
 ```bash
-# Run the initialization script for custom branding
+# Run the initialization script to set up your custom theme
 npm run init
 ```
 
-This will prompt you to:
+The initialization script will guide you through a 3-step process:
 
-- Enter a custom theme name
-- Set up theme slug and identifiers
-- Update theme metadata
+**Step 1: Theme Configuration**
+
+- Enter your new theme name (e.g., "My Awesome Theme")
+- Automatically generates a theme slug (or customize it)
+- Updates all theme files with your branding:
+  - `package.json` (name and themeName)
+  - `style.css` (theme header and text domain)
+  - `manifest.json` (app name and short name)
+  - `README.md` (title)
+  - `functions.php` (text domain)
+
+**Step 2: Git Repository Reset**
+
+- Automatically removes the connection to the original INITO WP repository
+- Deletes existing `.git` directory and commit history
+- Initializes a fresh git repository for your project
+
+**Step 3: New Git Repository Setup (Optional)**
+
+- Enter your new git repository URL (GitHub, GitLab, etc.)
+- Automatically adds it as remote origin
+- Creates an initial commit with your theme name
+- Optionally pushes to your new repository immediately
+
+After initialization, your theme will be completely rebranded and ready for development with no connection to the original repository.
 
 ### 4. Build Assets
 
