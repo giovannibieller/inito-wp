@@ -43,6 +43,12 @@ Our comprehensive documentation is organized into focused guides:
 - **[⚡ Performance Guide](docs/PERFORMANCE.md)** - Optimization strategies and monitoring
 - **[🔧 Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
 
+## Additional needed Actions
+
+- Install `Advanced Custom Fields PRO`
+- Import `imports/acf_seo.json` to enable ACF SEO FIELDS
+- Create `Utils` ACF Group related to `Utils Option page`
+
 ## 🏗️ Architecture
 
 ### Template System
@@ -87,4 +93,4 @@ GPL v2 or later
 
 ---
 
-Made with ❤️ for the WordPress community
+Made with ❤️ by Giovanni Bieller
