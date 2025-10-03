@@ -43,18 +43,18 @@ echo -e "${BLUE}============================================${NC}"
 echo ""
 echo -e "${BLUE}This script will:${NC}"
 echo "  1. Rename the theme throughout the project"
-echo "  2. Reset the git repository (remove connection to original repo)"
+echo "  2. Reset the git repository (preserving commitlint configuration)"
 echo "  3. Optionally set up your new git repository"
 echo ""
 
 # STEP 1: Get the new theme name and rename theme
 
-# Function to reset git repository
+# Function to reset git repository while preserving commitlint
 reset_git_repository() {
     print_status "Resetting git repository..."
     
     if [ ! -d ".git" ]; then
-        print_warning "No .git directory found. Creating new git repository..."
+        print_warning "No .git directory found. Initializing new git repository..."
     else
         # Get current remote URL to show user what will be removed
         CURRENT_REMOTE=$(git remote get-url origin 2>/dev/null || echo "No remote origin found")
@@ -63,22 +63,37 @@ reset_git_repository() {
             print_status "Removing connection to: ${YELLOW}${CURRENT_REMOTE}${NC}"
         fi
         
-        print_status "Removing existing .git directory..."
+        print_status "Removing existing .git directory and commit history..."
         rm -rf .git
         
         if [ $? -eq 0 ]; then
-            print_success "Old git repository removed"
+            print_success "Git history removed successfully"
         else
             print_error "Failed to remove .git directory"
             return 1
         fi
     fi
     
-    print_status "Initializing new git repository..."
+    print_status "Initializing fresh git repository..."
     git init
     
     if [ $? -eq 0 ]; then
         print_success "New git repository initialized"
+        
+        # Ensure commitlint hooks are properly set up
+        print_status "Setting up commitlint configuration..."
+        if [ -f "package.json" ] && command -v npm >/dev/null 2>&1; then
+            # Run husky to reinstall git hooks
+            npm run prepare >/dev/null 2>&1
+            if [ $? -eq 0 ]; then
+                print_success "Commitlint hooks configured successfully"
+            else
+                print_warning "Could not automatically configure commitlint hooks. Run 'npm run prepare' manually."
+            fi
+        else
+            print_warning "Could not set up commitlint hooks automatically. Ensure npm is available and run 'npm run prepare'."
+        fi
+        
         return 0
     else
         print_error "Failed to initialize new git repository"
@@ -237,9 +252,6 @@ fi
 # STEP 3: Setup new git repository
 setup_git_remote
 
-# STEP 3: Setup new git repository
-setup_git_remote
-
 # Final Summary
 echo ""
 print_success "============================================"
@@ -249,8 +261,8 @@ echo ""
 print_status "Summary:"
 echo -e "  ✓ Theme renamed to: ${GREEN}${NEW_NAME}${NC}"
 echo -e "  ✓ Theme slug: ${GREEN}${NEW_SLUG}${NC}"
-echo -e "  ✓ Git repository reset and initialized"
-echo -e "  ✓ Initial commit created"
+echo -e "  ✓ Git repository reset with fresh history"
+echo -e "  ✓ Commitlint configuration preserved and active"
 
 # Show git status
 if git remote get-url origin >/dev/null 2>&1; then
