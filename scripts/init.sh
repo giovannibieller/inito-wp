@@ -126,7 +126,7 @@ setup_git_remote() {
     # Create initial commit with the new theme name
     print_status "Creating initial commit..."
     git add .
-    git commit -m "Initial commit: ${NEW_NAME}"
+    git commit -m "chore: initial commit: ${NEW_SLUG} theme setup"
     
     if [ $? -eq 0 ]; then
         print_success "Initial commit created"
