@@ -1,6 +1,12 @@
 {
+	"core": "WordPress/latest",
 	"themes": ["."],
 	"mappings": {
 		"php.ini": "./php.ini"
+	},
+	"config": {
+		"WP_DEBUG": true,
+		"WP_DEBUG_LOG": true,
+		"WP_DEBUG_DISPLAY": true
 	}
 }
