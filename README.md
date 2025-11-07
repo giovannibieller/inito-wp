@@ -1,6 +1,6 @@
-# INITO WordPress Starter Theme
+# INITO WP | Starter Theme
 
-A modern, performance-optimized WordPress starter theme with comprehensive security features, accessibility compliance, and enterprise-grade development practices.
+A modern, performance-optimized INITO WP | Starter Theme with comprehensive security features, accessibility compliance, and enterprise-grade development practices.
 
 ## 🚀 Key Features
 
