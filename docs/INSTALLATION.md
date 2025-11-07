@@ -54,7 +54,7 @@ The initialization script will guide you through a 3-step process:
 - Updates all theme files with your branding:
   - `package.json` (name and themeName)
   - `style.css` (theme header and text domain)
-  - `manifest.json` (app name and short name)
+  - `site.webmanifest` (app name and short name)
   - `README.md` (title)
   - `functions.php` (text domain)
 

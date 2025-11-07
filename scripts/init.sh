@@ -225,14 +225,14 @@ replace_in_file() {
 # Replace theme names
 replace_in_file "package.json" "$CURRENT_NAME" "$NEW_NAME" "theme name in themeName field"
 replace_in_file "style.css" "$CURRENT_NAME" "$NEW_NAME" "theme name in header"
-replace_in_file "manifest.json" "$CURRENT_NAME" "$NEW_NAME" "app name"
+replace_in_file "site.webmanifest" "$CURRENT_NAME" "$NEW_NAME" "app name"
 replace_in_file "README.md" "$CURRENT_NAME" "$NEW_NAME" "title"
 
 # Replace theme slugs/identifiers
 replace_in_file "package.json" "$CURRENT_SLUG" "$NEW_SLUG" "package name"
 replace_in_file "package-lock.json" "$CURRENT_SLUG" "$NEW_SLUG" "package name"
 replace_in_file "style.css" "$CURRENT_SLUG" "$NEW_SLUG" "text domain"
-replace_in_file "manifest.json" "$CURRENT_SLUG" "$NEW_SLUG" "short name"
+replace_in_file "site.webmanifest" "$CURRENT_SLUG" "$NEW_SLUG" "short name"
 replace_in_file "functions.php" "$CURRENT_SLUG" "$NEW_SLUG" "text domain"
 
 print_success "Theme renamed successfully!"
