@@ -19,19 +19,6 @@ A modern, performance-optimized WordPress starter theme with comprehensive secur
 - WordPress 6.0+
 - PHP 8.0+
 
-### Installation
-
-```bash
-# Clone and install
-git clone <repository-url> wp-content/themes/inito-wp
-cd wp-content/themes/inito-wp
-nvm use && npm install
-
-# Build assets and start development
-npm run build
-npm start
-```
-
 ## 📚 Documentation
 
 Our comprehensive documentation is organized into focused guides:
@@ -84,12 +71,6 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for detailed contribution guidelines.
 ## 📄 License
 
 GPL v2 or later
-
-## 🆘 Support
-
-- 📖 **Documentation**: `/docs/` folder for detailed guides
-- 🐛 **Issues**: [GitHub Issues](repository-issues-url)
-- 💬 **Discussions**: [GitHub Discussions](repository-discussions-url)
 
 ---
 
