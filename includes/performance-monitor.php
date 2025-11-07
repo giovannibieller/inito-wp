@@ -70,31 +70,41 @@ class INITO_Performance_Monitor {
     public function track_database_metrics() {
         global $wpdb;
         
-        $this->metrics['database_queries'] = $wpdb->num_queries;
+        // Safely get number of queries
+        $this->metrics['database_queries'] = isset($wpdb->num_queries) ? $wpdb->num_queries : 0;
         
         // Calculate total query time from saved queries
         $total_query_time = 0;
-        if (defined('SAVEQUERIES') && SAVEQUERIES && !empty($wpdb->queries)) {
-            foreach ($wpdb->queries as $query) {
-                $total_query_time += $query[1];
-            }
-        }
-        $this->metrics['database_time'] = $total_query_time;
         
-        // Store slow queries if any
-        if (defined('SAVEQUERIES') && SAVEQUERIES && !empty($wpdb->queries)) {
+        // Check if query logging is enabled and queries exist
+        if (defined('SAVEQUERIES') && SAVEQUERIES && 
+            isset($wpdb->queries) && is_array($wpdb->queries) && !empty($wpdb->queries)) {
+            
+            foreach ($wpdb->queries as $query) {
+                // Ensure query is properly formatted array
+                if (is_array($query) && isset($query[1]) && is_numeric($query[1])) {
+                    $total_query_time += floatval($query[1]);
+                }
+            }
+            
+            // Store slow queries if any
             $slow_queries = array();
             foreach ($wpdb->queries as $query) {
-                if ($query[1] > 0.05) { // Queries taking more than 50ms
+                if (is_array($query) && isset($query[1]) && is_numeric($query[1]) && $query[1] > 0.05) {
                     $slow_queries[] = array(
-                        'query' => $query[0],
-                        'time' => $query[1],
-                        'caller' => $query[2]
+                        'query' => isset($query[0]) ? $query[0] : 'Unknown query',
+                        'time' => floatval($query[1]),
+                        'caller' => isset($query[2]) ? $query[2] : 'Unknown caller'
                     );
                 }
             }
             $this->metrics['slow_queries'] = $slow_queries;
+        } else {
+            // If SAVEQUERIES is not enabled, we can't track query time
+            $this->metrics['slow_queries'] = array();
         }
+        
+        $this->metrics['database_time'] = $total_query_time;
     }
 
     /**
@@ -304,6 +314,16 @@ class INITO_Performance_Monitor {
     }
 }
 
+// Fix for wpdb::$query_time compatibility issue
+add_action('init', function() {
+    global $wpdb;
+    
+    // Add query_time property if it doesn't exist to prevent errors
+    if (!property_exists($wpdb, 'query_time')) {
+        $wpdb->query_time = 0;
+    }
+}, 1);
+
 // Initialize performance monitoring
 if (defined('WP_DEBUG') && WP_DEBUG) {
     new INITO_Performance_Monitor();
@@ -311,31 +331,8 @@ if (defined('WP_DEBUG') && WP_DEBUG) {
 
 /**
  * Performance optimization utilities
+ * Note: Image optimization functions are handled in performance.php
  */
-
-/**
- * Optimize image delivery
- */
-function inito_optimize_images() {
-    // Add WebP support
-    add_filter('wp_check_filetype_and_ext', function($data, $file, $filename, $mimes) {
-        if (!$data['ext'] && !$data['type']) {
-            $wp_filetype = wp_check_filetype($filename, $mimes);
-            if ($wp_filetype['ext'] && $wp_filetype['type']) {
-                $data['ext'] = $wp_filetype['ext'];
-                $data['type'] = $wp_filetype['type'];
-            }
-        }
-        return $data;
-    }, 10, 4);
-
-    // Enable WebP uploads
-    add_filter('upload_mimes', function($mimes) {
-        $mimes['webp'] = 'image/webp';
-        return $mimes;
-    });
-}
-add_action('init', 'inito_optimize_images');
 
 /**
  * Database optimization functions
@@ -344,6 +341,7 @@ add_action('init', 'inito_optimize_images');
 /**
  * Clean up database on a schedule
  */
+if (!function_exists('inito_database_cleanup')) {
 function inito_database_cleanup() {
     global $wpdb;
 
@@ -374,6 +372,7 @@ function inito_database_cleanup() {
         $wpdb->query("OPTIMIZE TABLE {$table[0]}");
     }
 }
+}
 
 // Schedule weekly database cleanup
 if (!wp_next_scheduled('inito_database_cleanup')) {
@@ -384,6 +383,7 @@ add_action('inito_database_cleanup', 'inito_database_cleanup');
 /**
  * Cache optimization
  */
+if (!function_exists('inito_setup_advanced_caching')) {
 function inito_setup_advanced_caching() {
     // Object cache groups
     wp_cache_add_global_groups(array(
@@ -410,11 +410,13 @@ function inito_setup_advanced_caching() {
         }
     });
 }
+}
 add_action('init', 'inito_setup_advanced_caching');
 
 /**
  * Asset optimization
  */
+if (!function_exists('inito_optimize_assets')) {
 function inito_optimize_assets() {
     // Preload critical fonts
     add_action('wp_head', function() {
@@ -429,6 +431,7 @@ function inito_optimize_assets() {
         echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
     }, 1);
 }
+}
 add_action('init', 'inito_optimize_assets');
 
 /**
@@ -438,6 +441,7 @@ add_action('init', 'inito_optimize_assets');
 /**
  * Run performance tests
  */
+if (!function_exists('inito_run_performance_tests')) {
 function inito_run_performance_tests() {
     $tests = array();
 
@@ -459,10 +463,12 @@ function inito_run_performance_tests() {
 
     return $tests;
 }
+}
 
 /**
  * Performance recommendations
  */
+if (!function_exists('inito_get_performance_recommendations')) {
 function inito_get_performance_recommendations() {
     $recommendations = array();
 
@@ -495,4 +501,5 @@ function inito_get_performance_recommendations() {
     }
 
     return $recommendations;
+}
 }
