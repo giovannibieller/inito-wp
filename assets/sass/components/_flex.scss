@@ -1,0 +1,29 @@
+@use './mixins' as *;
+
+.flex_blocks {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.text_50_text_50,
+.image_50_image_50,
+.text_50_image_50,
+.image_50_text_50 {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+
+	@include media-query('md:port') {
+		flex-direction: column;
+	}
+}
+
+.text_50,
+.image_50 {
+	flex: 1;
+
+	@include media-query('md:port') {
+		width: 100%;
+	}
+}

@@ -11,6 +11,9 @@
         <div class="main_container_int">
             <?php the_content(); ?>
         </div>
+
+        <?php include (TEMPLATEPATH . "/page-templates/partials/flex.php"); ?>
+        
     <?php endwhile; endif; ?>
 </div>
 
