@@ -93,11 +93,15 @@ function copyLibs() {
  * Copy files in dist
  */
 function copyImages() {
-	return src([paths.img + '/**/*.*']).pipe(dest(paths.dist + '/img'));
+	return src([paths.img + '/**/*.*'], { encoding: false }).pipe(
+		dest(paths.dist + '/img')
+	);
 }
 
 function copyIco() {
-	return src([paths.ico + '/**/*.*']).pipe(dest(paths.dist + '/ico'));
+	return src([paths.ico + '/**/*.*'], { encoding: false }).pipe(
+		dest(paths.dist + '/ico')
+	);
 }
 
 function copyManifest() {
