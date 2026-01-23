@@ -1,6 +1,3 @@
-Include security.htaccess
-Include performance.htaccess
-
 # === WORDPRESS RULES (KEEP THESE) ===
 # BEGIN WordPress
 <IfModule mod_rewrite.c>

@@ -32,10 +32,6 @@ This theme is optimized for maximum performance across all devices and connectio
 
 ## Performance Features
 
-### ⚡ Server Performance
-
-**Location**: `/htaccess/performance.htaccess`
-
 #### Compression
 
 ```apache
@@ -469,7 +465,7 @@ class LazyLoader {
 		if ('IntersectionObserver' in window) {
 			this.observer = new IntersectionObserver(
 				this.onIntersection.bind(this),
-				this.config
+				this.config,
 			);
 			this.images.forEach((img) => this.observer.observe(img));
 		} else {
@@ -657,7 +653,7 @@ const urlsToCache = [
 
 self.addEventListener('install', (event) => {
 	event.waitUntil(
-		caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
+		caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache)),
 	);
 });
 
@@ -666,7 +662,7 @@ self.addEventListener('fetch', (event) => {
 		caches.match(event.request).then((response) => {
 			// Return cached version or fetch from network
 			return response || fetch(event.request);
-		})
+		}),
 	);
 });
 ```
@@ -699,7 +695,7 @@ class ProgressiveLoader {
 	loadPriorityLevel(priority) {
 		return new Promise((resolve) => {
 			const elements = document.querySelectorAll(
-				`[data-priority="${priority}"]`
+				`[data-priority="${priority}"]`,
 			);
 
 			elements.forEach((element) => {

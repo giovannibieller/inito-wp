@@ -111,9 +111,6 @@ Permissions-Policy: geolocation=(), microphone=(), camera=()- [ ] Configure serv
 ### 🗂️ Server Security (.htaccess)- [ ] Keep WordPress core, themes, and plugins updated
 
 - [ ] Use strong, unique passwords
-
-**Location**: `/htaccess/security.htaccess`- [ ] Implement two-factor authentication
-
 - [ ] Regular security audits
 
 #### File Access Protection
@@ -471,21 +468,18 @@ add_action('wp_login_failed', function($username) {
 #### Security Breach Response Plan
 
 1. **Immediate Actions**:
-
    - Take site offline if actively compromised
    - Change all passwords (WordPress, hosting, FTP)
    - Scan for malware
    - Review recent file changes
 
 2. **Investigation**:
-
    - Analyze security logs
    - Identify breach vector
    - Document compromised data
    - Notify relevant parties
 
 3. **Recovery**:
-
    - Remove malicious code
    - Restore from clean backup
    - Update all software

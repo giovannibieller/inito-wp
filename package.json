@@ -14,7 +14,8 @@
 		"build": "source $HOME/.nvm/nvm.sh; nvm use && gulp build",
 		"prepare": "husky",
 		"commitlint": "commitlint --edit",
-		"commitlint:check": "commitlint --from=HEAD~1 --to=HEAD --verbose"
+		"commitlint:check": "commitlint --from=HEAD~1 --to=HEAD --verbose",
+		"export": "./scripts/export-wp-env.sh"
 	},
 	"author": "",
 	"license": "ISC",
