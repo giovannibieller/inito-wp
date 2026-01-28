@@ -33,8 +33,8 @@ function sassCompiler() {
 				'error',
 				notify.onError(function (error) {
 					return 'Error: ' + error.message;
-				})
-			)
+				}),
+			),
 		)
 		.pipe(concat('main.css'))
 		.pipe(dest(paths.dist + '/css'));
@@ -50,8 +50,8 @@ function editorStylesCompiler() {
 				'error',
 				notify.onError(function (error) {
 					return 'Editor Styles Error: ' + error.message;
-				})
-			)
+				}),
+			),
 		)
 		.pipe(concat('editor-style.css'))
 		.pipe(dest(paths.dist + '/css'));
@@ -68,12 +68,12 @@ function jsCompiler() {
 				output: {
 					filename: 'main.min.js',
 				},
-			})
+			}),
 		)
 		.pipe(
 			babel({
 				presets: ['@babel/env'],
-			})
+			}),
 		)
 		.pipe(uglify())
 		.pipe(dest(paths.dist + '/js'));
@@ -83,10 +83,11 @@ function jsCompiler() {
  * JS libs copy
  */
 function copyLibs() {
-	return true;
-	// return src([])
-	// 	.pipe(fileinclude())
-	// 	.pipe(dest(paths.dist + '/js/vendor'));
+	return src([
+		paths.js + '/accessibility.js',
+		paths.js + '/admin-notices.js',
+		paths.js + '/lazy-loading.js',
+	]).pipe(dest(paths.dist + '/js/vendor'));
 }
 
 /**
@@ -94,13 +95,13 @@ function copyLibs() {
  */
 function copyImages() {
 	return src([paths.img + '/**/*.*'], { encoding: false }).pipe(
-		dest(paths.dist + '/img')
+		dest(paths.dist + '/img'),
 	);
 }
 
 function copyIco() {
 	return src([paths.ico + '/**/*.*'], { encoding: false }).pipe(
-		dest(paths.dist + '/ico')
+		dest(paths.dist + '/ico'),
 	);
 }
 
@@ -126,7 +127,7 @@ async function clean(cb) {
 function watchFiles(cb) {
 	gulp.watch(
 		[paths.sass + '/**/*.scss'],
-		series(sassCompiler, editorStylesCompiler)
+		series(sassCompiler, editorStylesCompiler),
 	);
 	gulp.watch([paths.js + '/*.js'], series(jsCompiler));
 	cb();
@@ -137,7 +138,8 @@ const build = series(
 	copyImages,
 	copyIco,
 	copyManifest,
-	parallel(sassCompiler, editorStylesCompiler, jsCompiler)
+	copyLibs,
+	parallel(sassCompiler, editorStylesCompiler, jsCompiler),
 );
 const watch = parallel(watchFiles);
 

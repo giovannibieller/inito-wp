@@ -243,7 +243,7 @@ class INITO_Accessibility {
     public function enqueue_accessibility_scripts() {
         wp_enqueue_script(
             'inito-accessibility',
-            get_template_directory_uri() . '/assets/js/accessibility.js',
+            get_template_directory_uri() . '/dist/js/vendor/accessibility.js',
             array('jquery'),
             wp_get_theme()->get('Version'),
             true
@@ -514,7 +514,7 @@ function inito_admin_notice_scripts($hook) {
     
     wp_enqueue_script(
         'inito-admin-notices',
-        get_template_directory_uri() . '/assets/js/admin-notices.js',
+        get_template_directory_uri() . '/dist/js/vendor/admin-notices.js',
         array('jquery'),
         wp_get_theme()->get('Version'),
         true

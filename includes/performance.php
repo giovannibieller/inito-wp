@@ -64,7 +64,7 @@ class INITO_Performance {
         if (!is_admin()) {
             wp_enqueue_script(
                 'inito-lazy-loading',
-                get_template_directory_uri() . '/assets/js/lazy-loading.js',
+                get_template_directory_uri() . '/dist/js/vendor/lazy-loading.js',
                 array(),
                 wp_get_theme()->get('Version'),
                 true
